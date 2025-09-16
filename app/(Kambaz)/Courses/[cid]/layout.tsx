@@ -8,8 +8,7 @@ interface CoursesLayoutProps {
   };
 }
 
-// Use async function to handle App Router async params
-export default async function CoursesLayout({ children, params }: CoursesLayoutProps) {
+export default function CoursesLayout({ children, params }: CoursesLayoutProps) {
   const { cid } = params;
 
   return (
