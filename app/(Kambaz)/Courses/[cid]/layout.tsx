@@ -1,11 +1,9 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import CourseNavigation from "./Navigation";
 
 interface CoursesLayoutProps {
   children: ReactNode;
-  params: {
-    cid: string;
-  };
+  params: { cid: string };
 }
 
 export default function CoursesLayout({ children, params }: CoursesLayoutProps) {
@@ -18,7 +16,7 @@ export default function CoursesLayout({ children, params }: CoursesLayoutProps) 
       <table>
         <tbody>
           <tr>
-            <td valign="top" width="200">
+            <td valign="top" width={200}>
               <CourseNavigation />
             </td>
             <td valign="top" width="100%">
