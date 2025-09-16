@@ -1,11 +1,10 @@
-import { ReactNode } from "react";
 import CourseNavigation from "./Navigation";
 
 export default function CoursesLayout({
   children,
   params,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
   params: { cid: string };
 }) {
   const { cid } = params;
