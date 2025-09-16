@@ -1,4 +1,6 @@
 "use client";
+import Image from "next/image";
+
 
 export default function Lab1() {
   return (
@@ -77,7 +79,7 @@ My favorite books (in no particular order)
 <ul id="wd-my-books">
   <li>Dune</li>
   <li>Lord of the Rings</li>
-  <li>Ender's Game</li>
+  <li>{"Ender's Game"}</li>
   <li>Red Mars</li>
   <li>The Forever War</li>
 </ul>
@@ -170,18 +172,26 @@ Your favorite books (in no particular order)
         </table>
       </div>
       <div id="wd-images">
-  <h4>Image tag</h4>
-  Loading an image from the internet: <br />
-  <img 
-    id="wd-starship" 
-    width="400px"   
-    src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg" 
-  />
-  <br />
-  Loading a local image:
-  <br />
-  <img id="wd-teslabot" src="/images/teslabot.jpg" height="200px" />
-  </div>
+      <h4>Image tag</h4>
+
+      <p>Loading an image from the internet:</p>
+      <Image
+        id="wd-starship"
+        src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
+        width={400}       // number, not "400px"
+        height={300}      // give a height or use layout="responsive"
+        alt="Starship"
+      />
+
+      <p>Loading a local image:</p>
+      <Image
+        id="wd-teslabot"
+        src="/images/teslabot.jpg"
+        width={200}
+        height={200}
+        alt="Teslabot"
+      />
+    </div>
 
   <div id="wd-forms">
   <h4>Form Elements</h4>
