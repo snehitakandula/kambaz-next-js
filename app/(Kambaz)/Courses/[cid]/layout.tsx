@@ -1,12 +1,15 @@
-import type { ReactNode } from "react";
+import { ReactNode } from "react";
 import CourseNavigation from "./Navigation";
 
 interface CoursesLayoutProps {
   children: ReactNode;
-  params: { cid: string };
+  params: {
+    cid: string;
+  };
 }
 
-export default function CoursesLayout({ children, params }: CoursesLayoutProps) {
+// Use async function to handle App Router async params
+export default async function CoursesLayout({ children, params }: CoursesLayoutProps) {
   const { cid } = params;
 
   return (
@@ -16,7 +19,7 @@ export default function CoursesLayout({ children, params }: CoursesLayoutProps) 
       <table>
         <tbody>
           <tr>
-            <td valign="top" width={200}>
+            <td valign="top" width="200">
               <CourseNavigation />
             </td>
             <td valign="top" width="100%">
