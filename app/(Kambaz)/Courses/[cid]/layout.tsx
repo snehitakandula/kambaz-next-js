@@ -3,12 +3,13 @@ import CourseNavigation from "./Navigation";
 
 interface CoursesLayoutProps {
   children: ReactNode;
-  params: { cid: string };
+  params: Promise<{ cid: string }>; // Changed from { cid: string } to Promise<{ cid: string }>
 }
 
-// No async here! Layout must be synchronous
-export default function CoursesLayout({ children, params }: CoursesLayoutProps) {
-  const { cid } = params;
+// Layout can be async in Next.js 15
+export default async function CoursesLayout({ children, params }: CoursesLayoutProps) {
+  // Await the params since it's now a Promise in Next.js 15
+  const { cid } = await params;
 
   return (
     <div id="wd-courses">
