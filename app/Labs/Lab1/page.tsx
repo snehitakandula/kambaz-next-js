@@ -329,7 +329,7 @@ Please
 to get dummy text<br/>
 
 Please
-<a href="https://www.lipsum.com" id="wd-lipsum">click here</a>
+<a href="https://github.com/snehitakandula/kambaz-next-js" id="wd-github">click here</a>
 to visit the code repository on GitHub<br/>
 
   </form>
