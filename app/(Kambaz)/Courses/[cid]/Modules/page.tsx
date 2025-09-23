@@ -21,7 +21,7 @@ export default function CourseHome() {
 
         {progressVisible && (
           <div style={{ marginBottom: "10px", color: "green" }}>
-            ✅ Progress: 2 of 6 lessons completed
+             Progress: 2 of 6 lessons completed
           </div>
         )}
 

@@ -1,4 +1,4 @@
-"use client"; // optional if you use state or client-only features
+"use client"; 
 import Link from "next/link";
 
 export default function Assignments() {

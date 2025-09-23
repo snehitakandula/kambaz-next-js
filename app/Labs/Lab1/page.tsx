@@ -178,8 +178,8 @@ Your favorite books (in no particular order)
       <Image
         id="wd-starship"
         src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
-        width={400}       // number, not "400px"
-        height={300}      // give a height or use layout="responsive"
+        width={400}       
+        height={300}      
         alt="Starship"
       />
 
