@@ -1,13 +1,32 @@
-import { ReactNode } from "react";
+"use client";
+
+import { ReactNode, useState } from "react";
 import KambazNavigation from "./Navigation";
-export default function KambazLayout({ children }: Readonly<{ children: ReactNode }>) {
- return (
-   <table>
-     <tbody>
-       <tr>
-         <td valign="top" width="200">  <KambazNavigation /> </td>
-         <td valign="top" width="100%"> {children}           </td>
-       </tr>
-     </tbody>
-   </table>
-);}
+import "./styles.css";
+
+export default function KambazLayout({ children }: { children: ReactNode }) {
+  const [showKambazNav] = useState(true);
+
+  return (
+    <div id="wd-kambaz" className="position-relative">
+
+      {/* Kambaz Navigation - Conditionally rendered */}
+      {showKambazNav && (
+        <div className="d-none d-md-block">
+          <KambazNavigation />
+        </div>
+      )}
+
+      {/* Main content with dynamic margin */}
+      <div 
+        className="p-3 transition-margin"
+        style={{ 
+          marginLeft: showKambazNav ? "110px" : "0",
+          transition: "margin-left 0.3s ease"
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
