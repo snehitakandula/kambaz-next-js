@@ -10,7 +10,7 @@ import { FaRegFileAlt } from "react-icons/fa";
 export default function Assignments() {
   return (
     <div style={{ flex: 3 }} className="p-3">
-      {/* Top bar (search left, buttons right) */}
+      
       <div className="d-flex justify-content-between align-items-center mb-4">
         <InputGroup style={{ maxWidth: "360px" }}>
           <span className="input-group-text"><FaSearch /></span>

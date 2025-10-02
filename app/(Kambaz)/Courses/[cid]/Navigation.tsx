@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function CourseNavigation() {
-  const pathname = usePathname(); // current path
+  const pathname = usePathname(); 
 
   const links = [
     { href: "/Courses/1234/Home", label: "Home" },

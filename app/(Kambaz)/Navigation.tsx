@@ -12,7 +12,7 @@ import { usePathname } from "next/navigation";
 export default function KambazNavigation() {
   const pathname = usePathname();
 
-  // Utility function for active vs inactive links
+  
   const getLinkClasses = (link: string, isAccount = false) => {
     const isActive = pathname.startsWith(link);
     if (isActive) {

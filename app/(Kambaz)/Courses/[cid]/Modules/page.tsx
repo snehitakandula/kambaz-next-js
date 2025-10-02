@@ -13,9 +13,9 @@ export default function CourseHome() {
 
   return (
     <div style={{ display: "flex", gap: "20px" }}>
-      {/* Left + Middle (Modules) */}
+      
       <div style={{ flex: 3 }}>
-        {/* Top control buttons */}
+        
         <ModulesControls />
         <br />
         <br />

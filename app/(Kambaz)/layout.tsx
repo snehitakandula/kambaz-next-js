@@ -10,14 +10,14 @@ export default function KambazLayout({ children }: { children: ReactNode }) {
   return (
     <div id="wd-kambaz" className="position-relative">
 
-      {/* Kambaz Navigation - Conditionally rendered */}
+      
       {showKambazNav && (
         <div className="d-none d-md-block">
           <KambazNavigation />
         </div>
       )}
 
-      {/* Main content with dynamic margin */}
+      
       <div 
         className="p-3 transition-margin"
         style={{ 

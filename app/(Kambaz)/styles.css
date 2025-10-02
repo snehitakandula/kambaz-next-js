@@ -7,34 +7,34 @@ body * {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Main content offset for larger screens */
+
 @media (min-width: 768px) {
   #wd-kambaz .wd-main-content-offset {
     padding-left: 140px !important;
   }
 }
 
-/* Base style for course navigation items */
+
 #wd-courses-navigation .list-group-item {
-  background-color: white;       /* white background */
-  color: #d63434;                /* same red as course title */
-  border: none;                  /* remove default borders */
-  border-left: 3px solid transparent; /* placeholder for selected */
-  padding: 0.75rem 1rem;         /* larger clickable area */
+  background-color: white;       
+  color: #d63434;               
+  border: none;                  
+  border-left: 3px solid transparent; 
+  padding: 0.75rem 1rem;         
   transition: background 0.2s;
 }
 
-/* Hover effect for non-selected items */
+
 #wd-courses-navigation .list-group-item:hover {
-  background-color: #f8f8f8;     /* subtle hover background */
-  color: #b52a2a;                /* slightly darker red on hover */
+  background-color: #f8f8f8;   
+  color: #b52a2a;                
 }
 
-/* Selected item */
+
 #wd-courses-navigation .list-group-item.active {
-  color: black !important;               /* black text */
-  background-color: white !important;    /* white background */
-  border-left: 3px solid black !important; /* slim black line on left */
+  color: black !important;               
+  background-color: white !important;   
+  border-left: 3px solid black !important; 
 }
 
 .btn-secondary {
@@ -52,10 +52,10 @@ body * {
 .wd-lesson {
   border-left: 3px solid green !important;
 }
-/* left-only green accent line for each assignment row */
+
 .wd-lesson-left-line {
   position: relative;
-  padding-left: 1.25rem; /* leave room for the left accent */
+  padding-left: 1.25rem; 
 }
 
 

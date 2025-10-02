@@ -98,14 +98,14 @@ export default function AssignmentEditor() {
           </Col>
         </Form.Group>
 
-        {/* ASSIGN section: left heading 'Assign' and everything else stacked to the right */}
+        {/* ASSIGN */}
         <Form.Group as={Row} className="mb-3" controlId="wd-assign-section">
   <Form.Label column sm={3} className="fw-bold">
     Assign
   </Form.Label>
   <Col sm={9}>
     <Card className="border p-3">
-      {/* Assign To with react-select */}
+      
       <Form.Group className="mb-3" controlId="wd-assign-to">
         <Form.Label className="fw-bold">Assign To</Form.Label>
         <Select
@@ -121,13 +121,13 @@ export default function AssignmentEditor() {
         />
       </Form.Group>
 
-      {/* Due */}
+      
       <Form.Group className="mb-3" controlId="wd-due-date">
         <Form.Label className="fw-bold">Due</Form.Label>
         <Form.Control type="datetime-local" defaultValue="2024-05-13T23:59" />
       </Form.Group>
 
-      {/* Available From / Until */}
+      
       <Row>
         <Col md={6}>
           <Form.Group className="mb-3" controlId="wd-available-from">
