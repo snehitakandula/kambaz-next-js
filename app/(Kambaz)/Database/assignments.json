@@ -1,0 +1,83 @@
+[
+  {
+    "_id": "A101",
+    "title": "Propulsion Assignment",
+    "course": "RS101",
+    "description": "Introduction to propulsion concepts and calculations.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A102",
+    "title": "Combustion Analysis",
+    "course": "RS101",
+    "description": "Analyze combustion processes and efficiency.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A103",
+    "title": "Nozzle Design Project",
+    "course": "RS101",
+    "description": "Design a nozzle and calculate performance metrics.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A201",
+    "title": "Aerodynamics Quiz",
+    "course": "RS102",
+    "description": "Quiz covering aerodynamics fundamentals.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 50
+  },
+  {
+    "_id": "A202",
+    "title": "Flow Analysis",
+    "course": "RS102",
+    "description": "Analyze flow over airfoils and in ducts.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A203",
+    "title": "Heating Analysis",
+    "course": "RS102",
+    "description": "Study heat transfer in fluids and solids.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A301",
+    "title": "Structural Design Task",
+    "course": "RS103",
+    "description": "Design a structural component for load analysis.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A302",
+    "title": "Orbital Calculations",
+    "course": "RS103",
+    "description": "Perform calculations for satellite orbits.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A303",
+    "title": "Systems Engineering Exam",
+    "course": "RS103",
+    "description": "Comprehensive exam on systems engineering topics.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  }
+]

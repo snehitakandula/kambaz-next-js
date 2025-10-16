@@ -1,16 +1,29 @@
 "use client";
 
 import Link from "next/link";
-
+import { useParams } from "next/navigation";
 import { ListGroup, ListGroupItem, Button, Form, InputGroup } from "react-bootstrap";
 import { BsGripVertical, BsThreeDotsVertical } from "react-icons/bs";
 import { FaPlus, FaSearch, FaCheckCircle, FaChevronDown } from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
+import * as db from "@/app/(Kambaz)/Database";
+
+interface Assignment {
+  _id: string;
+  title: string;
+  course: string;
+  description: string;
+  availableUntil: string;
+  dueDate: string;
+  points: number;
+}
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments: Assignment[] = db.assignments.filter((a: Assignment) => a.course === cid);
+
   return (
     <div style={{ flex: 3 }} className="p-3">
-      
       <div className="d-flex justify-content-between align-items-center mb-4">
         <InputGroup style={{ maxWidth: "360px" }}>
           <span className="input-group-text"><FaSearch /></span>
@@ -35,71 +48,32 @@ export default function Assignments() {
           </div>
 
           <ListGroup className="wd-lessons rounded-0">
-            {/* Assignment row 1 */}
-            <ListGroupItem className="wd-lesson p-3 ps-3 d-flex align-items-center wd-lesson-left-line">
-              <div className="me-3"><BsGripVertical className="fs-4 text-muted" /></div>
-              <FaRegFileAlt className="me-3 fs-4 text-muted" /> 
-              <div>
-                <div className="fw-bold">
-      <Link 
-        href={`/Courses/1234/Assignments/123`} 
-        className="text-decoration-none text-dark"
-      >
-        A1
-      </Link>
-    </div>
-                <div className="text-muted small">
-                 <span className="text-danger"> Multiple Modules </span> | <strong>Not available until</strong> May 6 at 12:00am | Due May 13 at 11:59pm | 100 pts
+            {assignments.map((a: Assignment) => (
+              <ListGroupItem
+                key={a._id}
+                className="wd-lesson p-3 ps-3 d-flex align-items-center wd-lesson-left-line"
+              >
+                <div className="me-3"><BsGripVertical className="fs-4 text-muted" /></div>
+                <FaRegFileAlt className="me-3 fs-4 text-muted" />
+                <div>
+                  <div className="fw-bold">
+                    <Link
+                      href={`/Courses/${cid}/Assignments/${a._id}`}
+                      className="text-decoration-none text-dark"
+                    >
+                      {a.title}
+                    </Link>
+                  </div>
+                  <div className="text-muted small">
+                    <span className="text-danger"> Multiple Modules </span> |{" "}
+                    <strong>Not available until</strong> {a.availableUntil} |{" "}
+                    Due {a.dueDate} | {a.points} pts
+                  </div>
                 </div>
-              </div>
-
-              <FaCheckCircle className="text-success ms-auto fs-4" />
-              <BsThreeDotsVertical className="ms-3 fs-5 text-muted" />
-            </ListGroupItem>
-
-            {/* Assignment row 2 */}
-            <ListGroupItem className="wd-lesson p-3 ps-3 d-flex align-items-center wd-lesson-left-line">
-              <div className="me-3"><BsGripVertical className="fs-4 text-muted" /></div>
-              <FaRegFileAlt className="me-3 fs-4 text-muted" />
-              <div>
-                <div className="fw-bold">
-      <Link 
-        href={`/Courses/1234/Assignments/124`} 
-        className="text-decoration-none text-dark"
-      >
-        A2
-      </Link>
-    </div>
-                <div className="text-muted small">
-                  <span className="text-danger"> Multiple Modules </span> | <strong>Not available until</strong> May 13 at 12:00am | Due May 20 at 11:59pm | 100 pts
-                </div>
-              </div>
-
-              <FaCheckCircle className="text-success ms-auto fs-4" />
-              <BsThreeDotsVertical className="ms-3 fs-5 text-muted" />
-            </ListGroupItem>
-
-            {/* Assignment row 3 */}
-            <ListGroupItem className="wd-lesson p-3 ps-3 d-flex align-items-center wd-lesson-left-line">
-              <div className="me-3"><BsGripVertical className="fs-4 text-muted" /></div>
-              <FaRegFileAlt className="me-3 fs-4 text-muted" />
-              <div>
-                <div className="fw-bold">
-      <Link 
-        href={`/Courses/1234/Assignments/125`} 
-        className="text-decoration-none text-dark"
-      >
-        A3
-      </Link>
-    </div>
-                <div className="text-muted small">
-                  <span className="text-danger"> Multiple Modules </span> | <strong>Not available until</strong> May 20 at 12:00am | Due May 27 at 11:59pm | 100 pts
-                </div>
-              </div>
-
-              <FaCheckCircle className="text-success ms-auto fs-4" />
-              <BsThreeDotsVertical className="ms-3 fs-5 text-muted" />
-            </ListGroupItem>
+                <FaCheckCircle className="text-success ms-auto fs-4" />
+                <BsThreeDotsVertical className="ms-3 fs-5 text-muted" />
+              </ListGroupItem>
+            ))}
           </ListGroup>
         </ListGroupItem>
       </ListGroup>

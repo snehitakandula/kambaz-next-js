@@ -3,33 +3,35 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function CourseNavigation() {
-  const pathname = usePathname(); 
+interface CourseNavigationProps {
+  cid: string;
+}
 
-  const links = [
-    { href: "/Courses/1234/Home", label: "Home" },
-    { href: "/Courses/1234/Modules", label: "Modules" },
-    { href: "/Courses/1234/Piazza", label: "Piazza" },
-    { href: "/Courses/1234/Zoom", label: "Zoom" },
-    { href: "/Courses/1234/Assignments", label: "Assignments" },
-    { href: "/Courses/1234/Quizzes", label: "Quizzes" },
-    { href: "/Courses/1234/Grades", label: "Grades" },
-    { href: "/Courses/1234/People/Table", label: "People" },
-  ];
+export default function CourseNavigation({ cid }: CourseNavigationProps) {
+  const pathname = usePathname();
+
+  const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades", "People"];
 
   return (
     <div id="wd-courses-navigation" className="list-group fs-5 rounded-0">
-      {links.map((link) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          className={`list-group-item list-group-item-action ${
-            pathname === link.href ? "active" : ""
-          }`}
-        >
-          {link.label}
-        </Link>
-      ))}
+      {links.map((label) => {
+        // Special case for People page
+        const href = label === "People"
+          ? `/Courses/${cid}/People/Table`
+          : `/Courses/${cid}/${label}`;
+
+        const isActive = pathname === href;
+
+        return (
+          <Link
+            key={href}
+            href={href}
+            className={`list-group-item list-group-item-action ${isActive ? "active" : ""}`}
+          >
+            {label}
+          </Link>
+        );
+      })}
     </div>
   );
 }
