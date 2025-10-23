@@ -79,5 +79,140 @@
     "availableUntil": "May 20 at 12:00am",
     "dueDate": "May 27 at 11:59pm",
     "points": 100
+  },
+  {
+    "_id": "A401",
+    "title": "Functional Groups Worksheet",
+    "course": "RS104",
+    "description": "Identify and classify various functional groups in organic compounds.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 50
+  },
+  {
+    "_id": "A402",
+    "title": "Reaction Mechanisms Assignment",
+    "course": "RS104",
+    "description": "Draw and explain mechanisms for substitution and elimination reactions.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 75
+  },
+  {
+    "_id": "A403",
+    "title": "Spectroscopy Lab Report",
+    "course": "RS104",
+    "description": "Analyze IR and NMR spectra to determine organic compound structures.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A501",
+    "title": "Coordination Complex Analysis",
+    "course": "RS105",
+    "description": "Study the geometry and bonding of coordination complexes.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 75
+  },
+  {
+    "_id": "A502",
+    "title": "Crystal Field Theory Quiz",
+    "course": "RS105",
+    "description": "Short quiz on crystal field theory and electronic configurations.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 50
+  },
+  {
+    "_id": "A503",
+    "title": "Catalysis Case Study",
+    "course": "RS105",
+    "description": "Write a report analyzing a real-world catalytic process.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A601",
+    "title": "Thermodynamics Problem Set",
+    "course": "RS106",
+    "description": "Solve problems related to chemical thermodynamics and equilibrium.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A602",
+    "title": "Reaction Kinetics Assignment",
+    "course": "RS106",
+    "description": "Calculate rate laws and interpret kinetic data.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A603",
+    "title": "Quantum Chemistry Exam",
+    "course": "RS106",
+    "description": "Test covering wave functions and molecular orbitals.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A701",
+    "title": "Elvish Grammar Quiz",
+    "course": "RS107",
+    "description": "Quiz on sentence structures and vocabulary in Sindarin and Quenya.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 50
+  },
+  {
+    "_id": "A702",
+    "title": "Script Translation Assignment",
+    "course": "RS107",
+    "description": "Translate ancient inscriptions from Quenya to English.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 75
+  },
+  {
+    "_id": "A703",
+    "title": "Cultural Context Essay",
+    "course": "RS107",
+    "description": "Essay analyzing the role of language in shaping Middle-earth cultures.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A801",
+    "title": "Diplomatic Relations Report",
+    "course": "RS108",
+    "description": "Analyze an example of inter-species diplomacy in Middle-earth history.",
+    "availableUntil": "May 6 at 12:00am",
+    "dueDate": "May 13 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A802",
+    "title": "Council Simulation Project",
+    "course": "RS108",
+    "description": "Participate in a simulated Council of Elrond negotiation activity.",
+    "availableUntil": "May 13 at 12:00am",
+    "dueDate": "May 20 at 11:59pm",
+    "points": 100
+  },
+  {
+    "_id": "A803",
+    "title": "War of the Ring Analysis",
+    "course": "RS108",
+    "description": "Write a report analyzing the diplomatic strategies used during the War of the Ring.",
+    "availableUntil": "May 20 at 12:00am",
+    "dueDate": "May 27 at 11:59pm",
+    "points": 100
   }
 ]

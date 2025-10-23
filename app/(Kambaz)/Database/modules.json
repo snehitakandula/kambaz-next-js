@@ -5,24 +5,9 @@
     "description": "Basic principles of rocket propulsion and rocket engines.",
     "course": "RS101",
     "lessons": [
-      {
-        "_id": "L101",
-        "name": "History of Rocketry",
-        "description": "A brief history of rocketry and space exploration.",
-        "module": "M101"
-      },
-      {
-        "_id": "L102",
-        "name": "Rocket Propulsion Fundamentals",
-        "description": "Basic principles of rocket propulsion.",
-        "module": "M101"
-      },
-      {
-        "_id": "L103",
-        "name": "Rocket Engine Types",
-        "description": "Overview of different types of rocket engines.",
-        "module": "M101"
-      }
+      { "_id": "L101", "name": "History of Rocketry", "description": "A brief history of rocketry and space exploration.", "module": "M101" },
+      { "_id": "L102", "name": "Rocket Propulsion Fundamentals", "description": "Basic principles of rocket propulsion.", "module": "M101" },
+      { "_id": "L103", "name": "Rocket Engine Types", "description": "Overview of different types of rocket engines.", "module": "M101" }
     ]
   },
   {
@@ -31,24 +16,9 @@
     "description": "Understanding rocket fuel, combustion processes, and efficiency.",
     "course": "RS101",
     "lessons": [
-      {
-        "_id": "L201",
-        "name": "Rocket Fuel",
-        "description": "Overview of different types of rocket fuels.",
-        "module": "M102"
-      },
-      {
-        "_id": "L202",
-        "name": "Combustion Processes",
-        "description": "Understanding combustion processes and efficiency.",
-        "module": "M102"
-      },
-      {
-        "_id": "L203",
-        "name": "Combustion Instability",
-        "description": "Understanding combustion instability and mitigation.",
-        "module": "M102"
-      }
+      { "_id": "L201", "name": "Rocket Fuel", "description": "Overview of different types of rocket fuels.", "module": "M102" },
+      { "_id": "L202", "name": "Combustion Processes", "description": "Understanding combustion processes and efficiency.", "module": "M102" },
+      { "_id": "L203", "name": "Combustion Instability", "description": "Understanding combustion instability and mitigation.", "module": "M102" }
     ]
   },
   {
@@ -57,60 +27,240 @@
     "description": "Principles of rocket nozzle design and performance optimization.",
     "course": "RS101",
     "lessons": [
-      {
-        "_id": "L301",
-        "name": "Nozzle Design",
-        "description": "Overview of different types of rocket nozzles.",
-        "module": "M103"
-      },
-      {
-        "_id": "L302",
-        "name": "Nozzle Performance",
-        "description": "Understanding nozzle performance and efficiency.",
-        "module": "M103"
-      },
-      {
-        "_id": "L303",
-        "name": "Nozzle Optimization",
-        "description": "Optimizing nozzle design for specific applications.",
-        "module": "M103"
-      }
+      { "_id": "L301", "name": "Nozzle Design", "description": "Overview of different types of rocket nozzles.", "module": "M103" },
+      { "_id": "L302", "name": "Nozzle Performance", "description": "Understanding nozzle performance and efficiency.", "module": "M103" },
+      { "_id": "L303", "name": "Nozzle Optimization", "description": "Optimizing nozzle design for specific applications.", "module": "M103" }
     ]
   },
   {
     "_id": "M201",
     "name": "Fundamentals of Aerodynamics",
     "description": "Basic aerodynamic concepts and fluid dynamics principles.",
-    "course": "RS102"
+    "course": "RS102",
+    "lessons": [
+      { "_id": "L401", "name": "Introduction to Aerodynamics", "description": "Basic principles of airflow and lift generation.", "module": "M201" },
+      { "_id": "L402", "name": "Fluid Flow Concepts", "description": "Understanding laminar and turbulent flow.", "module": "M201" },
+      { "_id": "L403", "name": "Airfoil Fundamentals", "description": "How airfoil shape affects lift and drag.", "module": "M201" }
+    ]
   },
   {
     "_id": "M202",
     "name": "Subsonic and Supersonic Flow",
     "description": "Understanding subsonic and supersonic aerodynamic behaviors.",
-    "course": "RS102"
+    "course": "RS102",
+    "lessons": [
+      { "_id": "L501", "name": "Subsonic Flow", "description": "Characteristics of low-speed aerodynamics.", "module": "M202" },
+      { "_id": "L502", "name": "Transonic and Supersonic Flow", "description": "Flow regimes and shock waves.", "module": "M202" },
+      { "_id": "L503", "name": "Mach Number Effects", "description": "Impact of Mach number on lift and drag.", "module": "M202" }
+    ]
   },
   {
     "_id": "M203",
     "name": "Aerodynamic Heating",
     "description": "Study of aerodynamic heating and thermal protection systems.",
-    "course": "RS102"
+    "course": "RS102",
+    "lessons": [
+      { "_id": "L601", "name": "Heating Mechanisms", "description": "How friction and compression cause heating.", "module": "M203" },
+      { "_id": "L602", "name": "Thermal Protection", "description": "Materials and systems for managing heat.", "module": "M203" },
+      { "_id": "L603", "name": "Case Studies", "description": "Examples from re-entry vehicles and spacecraft.", "module": "M203" }
+    ]
   },
   {
     "_id": "M301",
     "name": "Spacecraft Structural Design",
     "description": "Fundamentals of designing spacecraft structures and materials selection.",
-    "course": "RS103"
+    "course": "RS103",
+    "lessons": [
+      { "_id": "L701", "name": "Structural Loads", "description": "Types of loads acting on spacecraft.", "module": "M301" },
+      { "_id": "L702", "name": "Material Selection", "description": "Choosing materials for strength and weight.", "module": "M301" },
+      { "_id": "L703", "name": "Structural Analysis", "description": "Modeling spacecraft under stress.", "module": "M301" }
+    ]
   },
   {
     "_id": "M302",
     "name": "Orbital Mechanics",
     "description": "Understanding orbital dynamics and mission planning.",
-    "course": "RS103"
+    "course": "RS103",
+    "lessons": [
+      { "_id": "L801", "name": "Orbital Basics", "description": "Kepler’s laws and orbital motion.", "module": "M302" },
+      { "_id": "L802", "name": "Orbital Transfers", "description": "Hohmann transfers and trajectory optimization.", "module": "M302" },
+      { "_id": "L803", "name": "Mission Design", "description": "Planning multi-orbit missions.", "module": "M302" }
+    ]
   },
   {
     "_id": "M303",
     "name": "Spacecraft Systems Engineering",
     "description": "Overview of spacecraft systems and subsystems engineering.",
-    "course": "RS103"
+    "course": "RS103",
+    "lessons": [
+      { "_id": "L901", "name": "Subsystem Overview", "description": "Power, communication, and attitude control systems.", "module": "M303" },
+      { "_id": "L902", "name": "Integration Challenges", "description": "Integrating hardware and software systems.", "module": "M303" },
+      { "_id": "L903", "name": "Testing and Validation", "description": "Ensuring reliability before launch.", "module": "M303" }
+    ]
+  },
+  {
+    "_id": "M401",
+    "name": "Satellite Communication Systems",
+    "description": "Basics of how satellites enable global communication networks.",
+    "course": "RS104",
+    "lessons": [
+      { "_id": "L1001", "name": "Communication Fundamentals", "description": "Overview of satellite links and data transmission.", "module": "M401" },
+      { "_id": "L1002", "name": "Signal Propagation", "description": "How signals travel through the atmosphere.", "module": "M401" },
+      { "_id": "L1003", "name": "Antenna Design", "description": "Principles of antenna systems for space communication.", "module": "M401" }
+    ]
+  },
+  {
+    "_id": "M402",
+    "name": "Satellite Orbits and Networks",
+    "description": "Understanding different orbit types and network configurations.",
+    "course": "RS104",
+    "lessons": [
+      { "_id": "L1101", "name": "LEO, MEO, and GEO", "description": "Comparison of low, medium, and geostationary orbits.", "module": "M402" },
+      { "_id": "L1102", "name": "Constellation Design", "description": "How satellite constellations provide global coverage.", "module": "M402" },
+      { "_id": "L1103", "name": "Inter-Satellite Links", "description": "How satellites communicate within a network.", "module": "M402" }
+    ]
+  },
+  {
+    "_id": "M403",
+    "name": "Ground Systems and Operations",
+    "description": "Operation and management of ground-based satellite control.",
+    "course": "RS104",
+    "lessons": [
+      { "_id": "L1201", "name": "Ground Stations", "description": "Design and functionality of ground control centers.", "module": "M403" },
+      { "_id": "L1202", "name": "Tracking and Telemetry", "description": "Monitoring and data acquisition processes.", "module": "M403" },
+      { "_id": "L1203", "name": "Mission Operations", "description": "Daily operations of satellite communication networks.", "module": "M403" }
+    ]
+  },
+  {
+    "_id": "M501",
+    "name": "Space Robotics and Automation",
+    "description": "Fundamentals of robotic systems used in space exploration.",
+    "course": "RS105",
+    "lessons": [
+      { "_id": "L1301", "name": "Introduction to Space Robotics", "description": "Overview of robotic systems used in orbit and on planets.", "module": "M501" },
+      { "_id": "L1302", "name": "Autonomous Systems", "description": "How autonomy and AI enable robotic operations.", "module": "M501" },
+      { "_id": "L1303", "name": "Manipulators and Control", "description": "Design of robotic arms and motion control systems.", "module": "M501" }
+    ]
+  },
+  {
+    "_id": "M502",
+    "name": "Human-Robot Interaction in Space",
+    "description": "How astronauts and robots work together in missions.",
+    "course": "RS105",
+    "lessons": [
+      { "_id": "L1401", "name": "Teleoperation", "description": "Remote control of robots in space.", "module": "M502" },
+      { "_id": "L1402", "name": "Collaborative Tasks", "description": "Robots assisting humans during extravehicular activities.", "module": "M502" },
+      { "_id": "L1403", "name": "Safety and Reliability", "description": "Ensuring safe and reliable robotic behavior.", "module": "M502" }
+    ]
+  },
+  {
+    "_id": "M503",
+    "name": "Planetary Exploration Robots",
+    "description": "Study of rovers and probes designed for planetary missions.",
+    "course": "RS105",
+    "lessons": [
+      { "_id": "L1501", "name": "Mars Rover Design", "description": "Engineering challenges of Mars exploration.", "module": "M503" },
+      { "_id": "L1502", "name": "Autonomous Navigation", "description": "How rovers plan and execute movements.", "module": "M503" },
+      { "_id": "L1503", "name": "Data Collection Systems", "description": "Sensors and sampling tools on exploration robots.", "module": "M503" }
+    ]
+  },
+  {
+    "_id": "M601",
+    "name": "Space Mission Design",
+    "description": "Comprehensive overview of mission planning and execution.",
+    "course": "RS106",
+    "lessons": [
+      { "_id": "L1601", "name": "Mission Objectives", "description": "Defining scientific and engineering goals.", "module": "M601" },
+      { "_id": "L1602", "name": "Launch and Deployment", "description": "Planning launch trajectories and vehicle selection.", "module": "M601" },
+      { "_id": "L1603", "name": "Mission Phases", "description": "Breaking down missions from launch to re-entry.", "module": "M601" }
+    ]
+  },
+  {
+    "_id": "M602",
+    "name": "Systems Integration and Testing",
+    "description": "Integration and testing of spacecraft components and systems.",
+    "course": "RS106",
+    "lessons": [
+      { "_id": "L1701", "name": "Integration Processes", "description": "Bringing subsystems together into one spacecraft.", "module": "M602" },
+      { "_id": "L1702", "name": "Testing Techniques", "description": "Environmental and vibration testing of spacecraft.", "module": "M602" },
+      { "_id": "L1703", "name": "Quality Assurance", "description": "Ensuring reliability and mission success.", "module": "M602" }
+    ]
+  },
+  {
+    "_id": "M603",
+    "name": "Launch Operations",
+    "description": "Study of pre-launch, launch, and post-launch procedures.",
+    "course": "RS106",
+    "lessons": [
+      { "_id": "L1801", "name": "Launch Preparations", "description": "Checklist and ground activities before launch.", "module": "M603" },
+      { "_id": "L1802", "name": "Launch Dynamics", "description": "Understanding forces and stresses during liftoff.", "module": "M603" },
+      { "_id": "L1803", "name": "Post-Launch Operations", "description": "Orbit insertion and system checks.", "module": "M603" }
+    ]
+  },
+  {
+    "_id": "M701",
+    "name": "Advanced Propulsion Systems",
+    "description": "Exploration of nuclear, ion, and hybrid propulsion technologies.",
+    "course": "RS107",
+    "lessons": [
+      { "_id": "L1901", "name": "Electric Propulsion", "description": "Principles of ion and Hall effect thrusters.", "module": "M701" },
+      { "_id": "L1902", "name": "Nuclear Thermal Propulsion", "description": "Design and feasibility of nuclear rockets.", "module": "M701" },
+      { "_id": "L1903", "name": "Hybrid Systems", "description": "Combining chemical and electric propulsion.", "module": "M701" }
+    ]
+  },
+  {
+    "_id": "M702",
+    "name": "Interplanetary Travel",
+    "description": "Trajectory planning and challenges of deep space missions.",
+    "course": "RS107",
+    "lessons": [
+      { "_id": "L2001", "name": "Gravity Assists", "description": "Using planetary flybys to change trajectory.", "module": "M702" },
+      { "_id": "L2002", "name": "Deep Space Navigation", "description": "Tracking and guiding spacecraft far from Earth.", "module": "M702" },
+      { "_id": "L2003", "name": "Mission Duration Challenges", "description": "Coping with time, distance, and communication delays.", "module": "M702" }
+    ]
+  },
+  {
+    "_id": "M703",
+    "name": "Space Exploration Frontiers",
+    "description": "Future directions and technologies for interstellar missions.",
+    "course": "RS107",
+    "lessons": [
+      { "_id": "L2101", "name": "Interstellar Concepts", "description": "Theoretical ideas for travel beyond the solar system.", "module": "M703" },
+      { "_id": "L2102", "name": "Space Habitats", "description": "Design of long-duration living environments.", "module": "M703" },
+      { "_id": "L2103", "name": "Next-Gen Propulsion", "description": "Emerging technologies for future exploration.", "module": "M703" }
+    ]
+  },
+  {
+    "_id": "M801",
+    "name": "Space Policy and Ethics",
+    "description": "Study of legal, ethical, and political aspects of space exploration.",
+    "course": "RS108",
+    "lessons": [
+      { "_id": "L2201", "name": "International Space Law", "description": "Overview of treaties and regulations governing space.", "module": "M801" },
+      { "_id": "L2202", "name": "Ethics in Space Exploration", "description": "Debating ethical implications of colonization.", "module": "M801" },
+      { "_id": "L2203", "name": "Space Resource Utilization", "description": "Policies on mining and ownership beyond Earth.", "module": "M801" }
+    ]
+  },
+  {
+    "_id": "M802",
+    "name": "Commercial Space Industry",
+    "description": "Understanding private-sector contributions to space exploration.",
+    "course": "RS108",
+    "lessons": [
+      { "_id": "L2301", "name": "Space Startups", "description": "Innovations from emerging companies.", "module": "M802" },
+      { "_id": "L2302", "name": "Launch Providers", "description": "Overview of modern launch companies and competition.", "module": "M802" },
+      { "_id": "L2303", "name": "Regulations and Markets", "description": "Economics and governance of space commerce.", "module": "M802" }
+    ]
+  },
+  {
+    "_id": "M803",
+    "name": "Future of Space Exploration",
+    "description": "Discussing next steps for human presence in space.",
+    "course": "RS108",
+    "lessons": [
+      { "_id": "L2401", "name": "Colonizing the Moon", "description": "Plans and challenges for lunar bases.", "module": "M803" },
+      { "_id": "L2402", "name": "Mars Missions", "description": "Human exploration of Mars.", "module": "M803" },
+      { "_id": "L2403", "name": "Beyond the Solar System", "description": "Long-term vision for interstellar exploration.", "module": "M803" }
+    ]
   }
 ]

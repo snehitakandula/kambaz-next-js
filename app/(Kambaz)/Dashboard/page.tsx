@@ -23,7 +23,7 @@ export default function Dashboard() {
                   <Link href={`/Courses/${course._id}/Home`} className="text-decoration-none text-dark">
                     <CardImg
                       variant="top"
-                      src={defaultImg} // use default image
+                      src={course.img || defaultImg} // use default image
                       width="100%"
                       height={160}
                     />
