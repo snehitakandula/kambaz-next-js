@@ -2,8 +2,21 @@ import { useState } from "react";
 import { useSelector } from "react-redux";
 import { ListGroupItem, ListGroup } from "react-bootstrap";
 
+interface Todo {
+  id: string | number;
+  title: string;
+}
+
+interface TodosState {
+  todos: Todo[];
+}
+
+interface RootState {
+  todosReducer: TodosState;
+}
+
 export default function ArrayStateVariable() {
-   const { todos } = useSelector((state: any) => state.todosReducer);
+   const { todos } = useSelector((state: RootState) => state.todosReducer);
 
    const [array, setArray] = useState([1, 2, 3, 4, 5]);
    const addElement = () => {
@@ -35,7 +48,7 @@ export default function ArrayStateVariable() {
        </ul>
        <hr/>
        <ListGroup>
-          {todos.map((todo: any) => (
+          {todos.map((todo: Todo) => (
             <ListGroupItem key={todo.id}>
               {todo.title}
             </ListGroupItem>

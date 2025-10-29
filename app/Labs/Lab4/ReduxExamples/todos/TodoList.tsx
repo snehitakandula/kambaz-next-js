@@ -4,8 +4,21 @@ import TodoItem from "./TodoItem";
 import TodoForm from "./TodoForm";
 import { ListGroup } from "react-bootstrap";
 
+interface Todo {
+  id: string | number;
+  title: string;
+}
+
+interface TodosState {
+  todos: Todo[];
+}
+
+interface RootState {
+  todosReducer: TodosState;
+}
+
 export default function TodoList() {
-  const { todos } = useSelector((state: any) => state.todosReducer);
+  const { todos } = useSelector((state: RootState) => state.todosReducer);
 
   return (
     <div id="wd-todo-list-redux" className="p-3">
@@ -18,7 +31,7 @@ export default function TodoList() {
 
       {/* Todo Items Section */}
       <ListGroup>
-        {todos.map((todo: any) => (
+        {todos.map((todo: Todo) => (
           <TodoItem key={todo.id} todo={todo} />
         ))}
       </ListGroup>

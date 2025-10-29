@@ -1,10 +1,13 @@
 import { useState } from "react";
 export default function EventObject() {
-  const [event, setEvent] = useState(null);
-  const handleClick = (e: any) => {
-    e.target = e.target.outerHTML;
-    delete e.view;
-    setEvent(e);
+  const [event, setEvent] = useState<Record<string, unknown> | null>(null);
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const modifiedEvent = {
+      ...e,
+      target: e.target instanceof HTMLElement ? e.target.outerHTML : null,
+      view: undefined
+    };
+    setEvent(modifiedEvent as Record<string, unknown>);
   };
   return (
     <div>
@@ -18,4 +21,3 @@ export default function EventObject() {
       <hr/>
     </div>
 );}
-
