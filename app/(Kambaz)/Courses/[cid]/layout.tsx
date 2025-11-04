@@ -1,26 +1,43 @@
-import { ReactNode } from "react";
+"use client";
+
+import { ReactNode, useState } from "react";
 import CourseNavigation from "./Navigation";
 import Breadcrumb from "./Breadcrumb";
 import { FaAlignJustify } from "react-icons/fa";
-import { courses } from "../../Database";
+import { useSelector } from "react-redux";
+import { useParams } from "next/navigation";
+import { RootState } from "../../store";
 
-interface CoursesLayoutProps {
-  children: ReactNode;
-  params: Promise<{ cid: string }>;
-}
-
-export default async function CoursesLayout({ children, params }: CoursesLayoutProps) {
-  const { cid } = await params;
+export default function CoursesLayout({ children }: { children: ReactNode }) {
+  const { cid } = useParams();
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
   const course = courses.find((course) => course._id === cid);
+  const [showNavigation, setShowNavigation] = useState(true);
+
+  const toggleNavigation = () => {
+    setShowNavigation(!showNavigation);
+  };
 
   return (
     <div id="wd-courses">
       {/* Course title with breadcrumb inline */}
       <h2 className="text-danger d-flex align-items-center">
-        <FaAlignJustify className="me-4 fs-4 mb-1" />
-        <span>{course?.name}</span>
-        <span className="ms-3 text-danger" style={{ fontWeight: 400 }}>
-          &gt; <Breadcrumb course={course} />
+        <FaAlignJustify 
+          className="me-4 fs-4 mb-1" 
+          style={{ cursor: "pointer" }}
+          onClick={toggleNavigation}
+        />
+        <span suppressHydrationWarning>
+          {course ? (
+            <>
+              {course.name}
+              <span className="ms-3 text-danger" style={{ fontWeight: 400 }}>
+                &gt; <Breadcrumb course={course} />
+              </span>
+            </>
+          ) : (
+            "Course Not Found"
+          )}
         </span>
       </h2>
 
@@ -28,9 +45,11 @@ export default async function CoursesLayout({ children, params }: CoursesLayoutP
 
       <div className="d-flex">
         {/* Sidebar navigation */}
-        <div className="d-none d-md-block me-3">
-          <CourseNavigation cid={cid} />
-        </div>
+        {showNavigation && (
+          <div className="d-none d-md-block me-3">
+            <CourseNavigation cid={cid as string} />
+          </div>
+        )}
 
         {/* Main content area */}
         <div className="flex-fill">{children}</div>

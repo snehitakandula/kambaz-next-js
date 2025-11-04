@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { ListGroup, ListGroupItem, Button, Form, InputGroup } from "react-bootstrap";
 import { BsGripVertical, BsThreeDotsVertical } from "react-icons/bs";
-import { FaPlus, FaSearch, FaCheckCircle, FaChevronDown } from "react-icons/fa";
+import { FaPlus, FaSearch, FaCheckCircle, FaChevronDown, FaTrash } from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
-import * as db from "@/app/(Kambaz)/Database";
+import { RootState } from "@/app/(Kambaz)/store";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
 
 interface Assignment {
   _id: string;
@@ -20,7 +22,16 @@ interface Assignment {
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments: Assignment[] = db.assignments.filter((a: Assignment) => a.course === cid);
+  const dispatch = useDispatch();
+  const assignments = useSelector((state: RootState) =>
+    state.assignmentsReducer.assignments.filter(a => a.course === cid)
+  );
+
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this assignment?")) {
+      dispatch(deleteAssignment(id));
+    }
+  };
 
   return (
     <div style={{ flex: 3 }} className="p-3">
@@ -32,7 +43,11 @@ export default function Assignments() {
 
         <div className="d-flex gap-2">
           <Button variant="secondary"><FaPlus className="me-1" /> Group</Button>
-          <Button variant="danger"><FaPlus className="me-1" /> Assignment</Button>
+          <Link href={`/Courses/${cid}/Assignments/new`} passHref>
+            <Button variant="danger">
+              <FaPlus className="me-1" /> Assignment
+            </Button>
+          </Link>
         </div>
       </div>
 
@@ -71,7 +86,11 @@ export default function Assignments() {
                   </div>
                 </div>
                 <FaCheckCircle className="text-success ms-auto fs-4" />
-                <BsThreeDotsVertical className="ms-3 fs-5 text-muted" />
+                <FaTrash
+                  className="ms-3 fs-5 text-danger"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => handleDelete(a._id)}
+                />
               </ListGroupItem>
             ))}
           </ListGroup>

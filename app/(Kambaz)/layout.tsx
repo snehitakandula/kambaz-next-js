@@ -1,32 +1,20 @@
 "use client";
-
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import KambazNavigation from "./Navigation";
 import "./styles.css";
+import store from "./store";
+import { Provider } from "react-redux";
+export default function KambazLayout({
+ children,
+}: Readonly<{ children: ReactNode }>) {
+ return (
+   <Provider store={store}>
+     <div className="d-flex" id="wd-kambaz">
+       <div>
+         <KambazNavigation />
+       </div>
+       <div className="flex-fill ps-3 wd-main-content-offset">{children}</div>
+     </div>
+   </Provider>
+);}
 
-export default function KambazLayout({ children }: { children: ReactNode }) {
-  const [showKambazNav] = useState(true);
-
-  return (
-    <div id="wd-kambaz" className="position-relative">
-
-      
-      {showKambazNav && (
-        <div className="d-none d-md-block">
-          <KambazNavigation />
-        </div>
-      )}
-
-      
-      <div 
-        className="p-3 transition-margin"
-        style={{ 
-          marginLeft: showKambazNav ? "110px" : "0",
-          transition: "margin-left 0.3s ease"
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  );
-}
