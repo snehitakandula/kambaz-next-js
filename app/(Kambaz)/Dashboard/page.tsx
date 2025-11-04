@@ -23,12 +23,12 @@ export default function Dashboard() {
   
   const [course, setCourse] = useState<Course>({
     _id: "0",
-    name: "New Course",
+    name: "",
     number: "New Number",
     startDate: "2023-09-10",
     endDate: "2023-12-15",
     img: "/images/reactjs.jpg",
-    description: "New Description"
+    description: ""
   });
 
   const defaultImg = "/images/default-course.png";
@@ -60,12 +60,14 @@ export default function Dashboard() {
       <FormControl
         value={course.name}
         className="mb-2"
+        placeholder="New Course"
         onChange={(e) => setCourse({ ...course, name: e.target.value })}
       />
       <FormControl
         value={course.description}
         as="textarea"
         rows={3}
+        placeholder="New Description"
         onChange={(e) => setCourse({ ...course, description: e.target.value })}
       />
       <hr />
