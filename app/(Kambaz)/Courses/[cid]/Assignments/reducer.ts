@@ -17,7 +17,7 @@ interface AssignmentsState {
 }
 
 const initialState: AssignmentsState = {
-  assignments: db.assignments, // initialize from your Database
+  assignments: db.assignments,
 };
 
 const assignmentsSlice = createSlice({

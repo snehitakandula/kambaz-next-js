@@ -12,10 +12,10 @@ import { usePathname } from "next/navigation";
 export default function KambazNavigation() {
   const pathname = usePathname();
 
-  // ✅ Data-driven navigation links
+ 
   const links = [
     { label: "Dashboard", path: "/Dashboard", icon: AiOutlineDashboard },
-    { label: "Courses", path: "/Dashboard", icon: LiaBookSolid }, // intentionally same path
+    { label: "Courses", path: "/Dashboard", icon: LiaBookSolid }, // same path
     { label: "Calendar", path: "/Calendar", icon: IoCalendarOutline },
     { label: "Inbox", path: "/Inbox", icon: FaInbox },
     { label: "Labs", path: "/Labs", icon: LiaCogSolid },
@@ -55,13 +55,13 @@ export default function KambazNavigation() {
         Account
       </ListGroupItem>
 
-      {/* Dynamically generated links */}
+      
       {links.map((link) => {
         const isActive = pathname.includes(link.label);
         const Icon = link.icon;
         return (
           <ListGroupItem
-            key={`${link.path}-${link.label}`} // ✅ unique key fix
+            key={`${link.path}-${link.label}`} 
             as={Link}
             href={link.path}
             className={`bg-black text-center border-0 ${

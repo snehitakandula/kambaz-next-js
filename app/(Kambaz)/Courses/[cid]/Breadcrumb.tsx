@@ -7,7 +7,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ course }: BreadcrumbProps) {
   const pathname = usePathname();
-  const currentPage = pathname.split("/").pop(); // last part of URL
+  const currentPage = pathname.split("/").pop(); 
 
-  return <>{currentPage}</>; // only the current page
+  return <>{currentPage}</>; 
 }

@@ -1,34 +1,57 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Nav, NavItem, NavLink } from "react-bootstrap";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
 export default function AccountNavigation() {
-  const pathname = usePathname();
+  const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
+  const links = currentUser ? [{ label: "Profile", href: "/Account/Profile" }] :
+    [
+      { label: "Signin", href: "/Account/Signin" },
+      { label: "Signup", href: "/Account/Signup" }
+    ];
 
-  const links = [
-    { href: "/Account/Signin", label: "Signin" },
-    { href: "/Account/Signup", label: "Signup" },
-    { href: "/Account/Profile", label: "Profile" },
-  ];
+  const pathname = usePathname() || "";
 
   return (
-    <div id="wd-account-navigation" className="list-group">
-      {links.map((link) => {
-        const isActive = pathname === link.href;
-        return (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={`list-group-item list-group-item-action border-0 text-center rounded-0 ${
-              isActive
-                ? "text-black border-start border-3 border-black"
-                : "text-danger"
-            }`}
-          >
-            <span className="d-block">{link.label}</span>
-          </Link>
-        );
-      })}
-    </div>
+    <>
+      <style jsx>{`
+        :global(.account-nav .nav-link) {
+          color: #000;
+          background-color: transparent !important;
+          border-left: 4px solid transparent;
+          border-radius: 0;
+          padding-left: 1rem;
+        }
+        
+        :global(.account-nav .nav-link:hover) {
+          background-color: #f8f9fa !important;
+        }
+        
+        :global(.account-nav .nav-link.active) {
+          color: #000 !important;
+          background-color: transparent !important;
+          border-left: 4px solid #000;
+          font-weight: 600;
+        }
+      `}</style>
+      
+      <Nav variant="pills" className="flex-column account-nav">
+        {links.map((link) => (
+          <NavItem key={link.href}>
+            <NavLink
+              as={Link}
+              href={link.href}
+              active={pathname.toLowerCase().endsWith(link.href.toLowerCase().replace("/account/", ""))}
+            >
+              {link.label}
+            </NavLink>
+          </NavItem>
+        ))}
+      </Nav>
+    </>
   );
 }

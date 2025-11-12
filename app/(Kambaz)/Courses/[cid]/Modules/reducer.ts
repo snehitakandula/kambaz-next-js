@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { modules as dbModules } from "../../../Database";
 import { v4 as uuidv4 } from "uuid";
 
-// Define types
+
 interface Lesson {
   _id: string;
   name: string;
@@ -19,12 +19,12 @@ export interface Module {
   editing?: boolean;
 }
 
-// Define slice state
+
 interface ModulesState {
   modules: Module[];
 }
 
-// Initial state
+
 const initialState: ModulesState = {
   modules: dbModules as Module[],
 };

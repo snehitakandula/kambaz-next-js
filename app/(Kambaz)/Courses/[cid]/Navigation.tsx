@@ -15,7 +15,7 @@ export default function CourseNavigation({ cid }: CourseNavigationProps) {
   return (
     <div id="wd-courses-navigation" className="list-group fs-5 rounded-0">
       {links.map((label) => {
-        // Special case for People page
+        
         const href = label === "People"
           ? `/Courses/${cid}/People/Table`
           : `/Courses/${cid}/${label}`;

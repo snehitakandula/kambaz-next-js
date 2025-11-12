@@ -24,12 +24,11 @@ export default function TodoList() {
     <div id="wd-todo-list-redux" className="p-3">
       <h2 className="mb-3">Todo List</h2>
 
-      {/* Add/Update Section */}
+     
       <div className="mb-3">
         <TodoForm />
       </div>
 
-      {/* Todo Items Section */}
       <ListGroup>
         {todos.map((todo: Todo) => (
           <TodoItem key={todo.id} todo={todo} />

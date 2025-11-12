@@ -24,12 +24,12 @@ export default function AssignmentEditor() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Find existing assignment if editing
+  
   const existingAssignment: Assignment | undefined = db.assignments.find(
     (a) => a._id === aid && a.course === (Array.isArray(cid) ? cid[0] : cid)
   );
 
-  // Form state
+ 
   const [title, setTitle] = useState(existingAssignment?.title || "");
   const [description, setDescription] = useState(existingAssignment?.description || "");
   const [points, setPoints] = useState(existingAssignment?.points || 0);

@@ -7,7 +7,7 @@ export default function DateStateVariable() {
   const [startDate, setStartDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    // Initialize date only on the client to avoid SSR mismatch
+    // Initializing date only on the client to avoid SSR mismatch
     setStartDate(new Date());
   }, []);
 

@@ -11,7 +11,7 @@ export default function EventObject() {
       return type === 'string' || type === 'number' || type === 'boolean';
     };
     
-    // Get all properties from the event object and its prototype chain
+    
     let currentObj = e as unknown;
     while (currentObj !== null && currentObj !== Object.prototype) {
       Object.getOwnPropertyNames(currentObj).forEach(prop => {
@@ -22,7 +22,7 @@ export default function EventObject() {
               modifiedEvent[prop] = value;
             }
           } catch (error) {
-            // Skip properties that throw errors when accessed
+            
           }
         }
       });

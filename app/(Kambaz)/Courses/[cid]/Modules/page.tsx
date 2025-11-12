@@ -19,7 +19,7 @@ export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
 
-  // ✅ Get modules from Redux
+ 
   const modules = useSelector((state: RootState) =>
     state.modulesReducer.modules.filter((m) => m.course === cid)
   );

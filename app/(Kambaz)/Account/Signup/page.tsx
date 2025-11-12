@@ -13,21 +13,18 @@ export default function Signup() {
           id="wd-username"
           placeholder="username"
           className="mb-2"
-          defaultValue="Snehita"
         />
         <FormControl
           id="wd-password"
           placeholder="password"
           type="password"
           className="mb-2"
-          defaultValue="123456"
         />
         <FormControl
           id="wd-password-verify"
           placeholder="verify password"
           type="password"
           className="mb-3"
-          defaultValue="123456"
         />
         <Link
           id="wd-signup-btn"

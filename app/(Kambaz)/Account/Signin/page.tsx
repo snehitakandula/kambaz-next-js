@@ -5,32 +5,39 @@ import { setCurrentUser } from "../reducer";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
 import * as db from "../../Database";
-import { FormControl, Button } from "react-bootstrap";
-
-export default function Signin() {
-   interface Credentials {
-  username: string;
-  password: string;
-}
+import { FormControl, Button, Alert } from "react-bootstrap";
 
 interface User {
   username: string;
   password: string;
 }
 
-const [credentials, setCredentials] = useState<Partial<Credentials>>({});
+interface Credentials {
+  username: string;
+  password: string;
+}
 
- const dispatch = useDispatch();
- const signin = () => {
-   const user = db.users.find(
-     (u: User) =>
-       u.username === credentials.username &&
-       u.password === credentials.password
-   );
-   if (!user) return;
-   dispatch(setCurrentUser(user));
-   redirect("/Dashboard");
- };
+export default function Signin() {
+  const [credentials, setCredentials] = useState<Credentials>({
+    username: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const dispatch = useDispatch();
+
+  const signin = () => {
+    const user = db.users.find(
+      (u: User) =>
+        u.username === credentials.username &&
+        u.password === credentials.password
+    );
+    if (!user) {
+      setError("Invalid username or password");
+      return;
+    }
+    dispatch(setCurrentUser(user));
+    redirect("/Dashboard");
+  };
 
   return (
     <div
@@ -39,14 +46,41 @@ const [credentials, setCredentials] = useState<Partial<Credentials>>({});
     >
       <div className="w-100" style={{ maxWidth: "350px", marginTop: "100px" }}>
         <h1 className="text-center mb-4">Sign in</h1>
-        <FormControl defaultValue={credentials.username}
-             onChange={(e) => setCredentials({ ...credentials, username: e.target.value })}
-             className="mb-2" placeholder="username" id="wd-username" />
-      <FormControl defaultValue={credentials.password}
-             onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
-             className="mb-2" placeholder="password" type="password" id="wd-password" />
-      <Button onClick={signin} id="wd-signin-btn" className="w-100" > Sign in </Button>
-      <Link id="wd-signup-link" href="/Account/Signup"> Sign up </Link>
+         {error && <Alert variant="danger">{error}</Alert>}
+        <FormControl
+          id="wd-username"
+          placeholder="username"
+          className="mb-2"
+          value={credentials.username}
+          onChange={(e) =>
+            setCredentials({ ...credentials, username: e.target.value })
+          }
+        />
+
+        <FormControl
+          id="wd-password"
+          placeholder="password"
+          type="password"
+          className="mb-3"
+          value={credentials.password}
+          onChange={(e) =>
+            setCredentials({ ...credentials, password: e.target.value })
+          }
+        />
+
+        <Button
+          onClick={signin}
+          id="wd-signin-btn"
+          className="btn btn-primary w-100 mb-2"
+        >
+          Sign in
+        </Button>
+
+        <div className="text-center">
+          <Link id="wd-signup-link" href="/Account/Signup">
+            Sign up
+          </Link>
+        </div>
       </div>
     </div>
   );
