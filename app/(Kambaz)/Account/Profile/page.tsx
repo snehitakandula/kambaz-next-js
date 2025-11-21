@@ -1,4 +1,5 @@
 "use client";
+import * as client from "../client";
 import { redirect } from "next/dist/client/components/navigation";
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -23,14 +24,20 @@ interface User {
 }
 
 export default function Profile() {
-  const [profile, setProfile] = useState<User | null>(null);
+  const [profile, setProfile] = useState<User>({} as User);
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
+  const updateProfile = async () => {
+    const updatedProfile = await client.updateUser(profile);
+    dispatch(setCurrentUser(updatedProfile));
+  };
 
-  const signout = () => {
+  const signout = async () => {
+    await client.signout();
     dispatch(setCurrentUser(null));
     redirect("/Account/Signin");
   };
+
 
   useEffect(() => {
     if (!currentUser) return redirect("/Account/Signin");
@@ -91,6 +98,7 @@ export default function Profile() {
           <option value="FACULTY">Faculty</option>
           <option value="STUDENT">Student</option>
         </select>
+        <button onClick={updateProfile} className="btn btn-primary w-100 mb-2"> Update </button>
         <Button
           onClick={signout}
           className="w-100 mb-2"

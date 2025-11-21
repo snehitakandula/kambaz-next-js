@@ -8,7 +8,9 @@ import { FaPlus, FaSearch, FaCheckCircle, FaChevronDown, FaTrash } from "react-i
 import { FaRegFileAlt } from "react-icons/fa";
 import { RootState } from "@/app/(Kambaz)/store";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { useEffect } from "react";
+import { setAssignments } from "./reducer";
+import * as client from "../../client";
 
 interface Assignment {
   _id: string;
@@ -23,13 +25,24 @@ interface Assignment {
 export default function Assignments() {
   const { cid } = useParams();
   const dispatch = useDispatch();
-  const assignments = useSelector((state: RootState) =>
-    state.assignmentsReducer.assignments.filter(a => a.course === cid)
-  );
 
-  const handleDelete = (id: string) => {
+ 
+  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+
+ 
+  useEffect(() => {
+    const loadAssignments = async () => {
+      if (!cid) return;
+      const data = await client.findAssignmentsForCourse(cid as string);
+      dispatch(setAssignments(data));
+    };
+    loadAssignments();
+  }, [cid, dispatch]);
+
+  const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this assignment?")) {
-      dispatch(deleteAssignment(id));
+      await client.deleteAssignment(id);
+      dispatch(setAssignments(assignments.filter((a) => a._id !== id)));
     }
   };
 

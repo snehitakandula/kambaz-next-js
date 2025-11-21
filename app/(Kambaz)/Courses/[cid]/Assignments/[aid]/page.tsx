@@ -1,12 +1,14 @@
 "use client";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Select from "react-select";
 import { Form, Button, Card, Row, Col } from "react-bootstrap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useRouter } from "next/navigation";
-import { v4 as uuidv4 } from "uuid";
-import * as db from "@/app/(Kambaz)/Database";
+import {
+  findAssignmentById,
+  createAssignmentForCourse,
+  updateAssignment as saveAssignmentToServer
+} from "../../../client";
 import { addAssignment, updateAssignment } from "../reducer";
 
 interface Assignment {
@@ -23,52 +25,62 @@ export default function AssignmentEditor() {
   const { cid, aid } = useParams();
   const dispatch = useDispatch();
   const router = useRouter();
-
-  
-  const existingAssignment: Assignment | undefined = db.assignments.find(
-    (a) => a._id === aid && a.course === (Array.isArray(cid) ? cid[0] : cid)
-  );
-
- 
-  const [title, setTitle] = useState(existingAssignment?.title || "");
-  const [description, setDescription] = useState(existingAssignment?.description || "");
-  const [points, setPoints] = useState(existingAssignment?.points || 0);
-  const [availableUntil, setAvailableUntil] = useState(existingAssignment?.availableUntil || "");
-  const [dueDate, setDueDate] = useState(existingAssignment?.dueDate || "");
-
   const courseId = Array.isArray(cid) ? cid[0] : cid;
 
-  const handleSave = () => {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [points, setPoints] = useState(0);
+  const [availableUntil, setAvailableUntil] = useState("");
+  const [dueDate, setDueDate] = useState("");
+
+  // ⭐ Load assignment from server
+  useEffect(() => {
+    const load = async () => {
+      if (aid === "new") return;
+      const assignment = await findAssignmentById(aid as string);
+
+      if (!assignment) return;
+
+      setTitle(assignment.title);
+      setDescription(assignment.description);
+      setPoints(assignment.points);
+      setAvailableUntil(assignment.availableUntil);
+      setDueDate(assignment.dueDate);
+    };
+    load();
+  }, [aid]);
+
+  const handleSave = async () => {
     if (!courseId) return;
 
-    const newAssignment: Assignment = {
-      _id: existingAssignment?._id || uuidv4(),
+    const assignment: Assignment = {
+      _id: aid === "new" ? "" : (aid as string),
       title,
       description,
       points,
       course: courseId,
       availableUntil,
-      dueDate,
+      dueDate
     };
 
-    if (existingAssignment) {
-      dispatch(updateAssignment(newAssignment));
+    if (aid === "new") {
+      const created = await createAssignmentForCourse(courseId, assignment);
+      dispatch(addAssignment(created));
     } else {
-      dispatch(addAssignment(newAssignment));
+      const updated = await saveAssignmentToServer(assignment);
+      dispatch(updateAssignment(updated));
     }
 
     router.push(`/Courses/${courseId}/Assignments`);
   };
 
   const handleCancel = () => {
-    if (!courseId) return;
     router.push(`/Courses/${courseId}/Assignments`);
   };
 
   return (
     <div id="wd-assignments-editor" className="p-3" style={{ maxWidth: "900px" }}>
       <Form>
-        {/* Assignment Name */}
         <Form.Group className="mb-3" controlId="wd-name">
           <Form.Label className="fw-bold">Assignment Name</Form.Label>
           <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -153,7 +165,7 @@ export default function AssignmentEditor() {
           </Col>
         </Form.Group>
 
-        {/* ASSIGN */}
+        {/* Assign Section */}
         <Form.Group as={Row} className="mb-3" controlId="wd-assign-section">
           <Form.Label column sm={3} className="fw-bold">
             Assign

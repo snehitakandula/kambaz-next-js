@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { modules as dbModules } from "../../../Database";
 import { v4 as uuidv4 } from "uuid";
-
 
 interface Lesson {
   _id: string;
@@ -19,21 +17,29 @@ export interface Module {
   editing?: boolean;
 }
 
-
 interface ModulesState {
   modules: Module[];
 }
 
-
+// ✅ REQUIRED: modules start empty because server will populate them
 const initialState: ModulesState = {
-  modules: dbModules as Module[],
+  modules: [],
 };
 
 const modulesSlice = createSlice({
   name: "modules",
   initialState,
   reducers: {
-    addModule: (state, action: PayloadAction<{ name: string; course: string }>) => {
+    // ✅ REQUIRED: new reducer to set modules from server
+    setModules: (state, action: PayloadAction<Module[]>) => {
+      state.modules = action.payload;
+    },
+
+    // (Keep all your existing reducers exactly the same)
+    addModule: (
+      state,
+      action: PayloadAction<{ name: string; course: string }>
+    ) => {
       const newModule: Module = {
         _id: uuidv4(),
         name: action.payload.name,
@@ -63,7 +69,8 @@ const modulesSlice = createSlice({
   },
 });
 
-export const { addModule, deleteModule, updateModule, editModule } =
+// Export all reducers including the new one
+export const { setModules, addModule, deleteModule, updateModule, editModule } =
   modulesSlice.actions;
 
 export default modulesSlice.reducer;

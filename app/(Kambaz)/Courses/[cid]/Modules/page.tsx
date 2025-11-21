@@ -7,11 +7,11 @@ import { FaChevronDown } from "react-icons/fa6";
 import ModulesControls from "../Modules/ModulesControls";
 import ModuleControlButtons from "../Modules/ModuleControlButtons";
 import LessonControlButtons from "../Modules/LessonControlButtons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../store";
-import { addModule, deleteModule, editModule, updateModule } from "./reducer";
-
+import { editModule, updateModule, setModules } from "./reducer";
+import * as client from "../../client";
 
 
 
@@ -19,12 +19,41 @@ export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
 
- 
-  const modules = useSelector((state: RootState) =>
-    state.modulesReducer.modules.filter((m) => m.course === cid)
-  );
-
   const dispatch = useDispatch();
+
+  const onRemoveModule = async (moduleId: string) => {
+    await client.deleteModule(moduleId);
+    dispatch(setModules(modules.filter((m) => m._id !== moduleId)));
+  };
+
+
+  const onCreateModuleForCourse = async () => {
+    if (!cid || Array.isArray(cid)) return;
+    const newModule = { name: moduleName, course: cid };
+    const createdModule = await client.createModuleForCourse(cid, newModule);
+    dispatch(setModules([...modules, createdModule]));
+  };
+
+const onUpdateModule = async (module: typeof modules[0]) => {
+  await client.updateModule(module);
+  const newModules = modules.map((m) => m._id === module._id ? module : m);
+  dispatch(setModules(newModules));
+};
+
+
+
+  // ⭐ REQUIRED CHANGE: remove .filter() because server already filters
+  const { modules } = useSelector((state: RootState) => state.modulesReducer);
+
+  useEffect(() => {
+  const fetchModules = async () => {
+    const data = await client.findModulesForCourse(cid as string);
+    dispatch(setModules(data));
+  };
+
+  fetchModules();
+}, [cid, dispatch]);
+
 
   return (
     <div style={{ display: "flex", gap: "20px" }}>
@@ -32,11 +61,9 @@ export default function Modules() {
         <ModulesControls
           moduleName={moduleName}
           setModuleName={setModuleName}
-          addModule={() => {
-            dispatch(addModule({ name: moduleName || "New Module", course: cid as string }));
-            setModuleName("");
-          }}
+          addModule={onCreateModuleForCourse}
         />
+
         <br />
         <br />
         <br />
@@ -52,16 +79,19 @@ export default function Modules() {
                 <FaChevronDown className="me-2 fs-5" />
 
                 {!module.editing && module.name}
+
                 {module.editing && (
                   <FormControl
                     className="w-50 d-inline-block"
                     defaultValue={module.name}
                     onChange={(e) =>
-                      dispatch(updateModule({ ...module, name: e.target.value }))
+                      dispatch(
+                        updateModule({ ...module, name: e.target.value })
+                      )
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
-                        dispatch(updateModule({ ...module, editing: false }));
+                          onUpdateModule({ ...module, editing: false });
                       }
                     }}
                   />
@@ -69,7 +99,7 @@ export default function Modules() {
 
                 <ModuleControlButtons
                   moduleId={module._id}
-                  deleteModule={(id) => dispatch(deleteModule(id))}
+                  deleteModule={(moduleId) => onRemoveModule(moduleId)}
                   editModule={(id) => dispatch(editModule(id))}
                 />
               </div>

@@ -8,6 +8,7 @@ import { RootState } from "../store";
 
 export default function AccountNavigation() {
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
+  
   const links = currentUser ? [{ label: "Profile", href: "/Account/Profile" }] :
     [
       { label: "Signin", href: "/Account/Signin" },

@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Row, Col, Card, CardBody, CardTitle, CardText, CardImg, Button, FormControl } from "react-bootstrap";
+import {
+  Row, Col, Card, CardBody, CardTitle, CardText, CardImg,
+  Button, FormControl
+} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { addNewCourse, deleteCourse, updateCourse } from "../Courses/reducer";
-import { enrollCourse, unenrollCourse } from "../Enrollments/reducer";
+import { setCourses } from "../Courses/reducer";
+import * as enrollmentClient from "../Enrollments/client";
+import * as client from "../Courses/client";
 import { RootState } from "../store";
 
 interface Course {
@@ -18,16 +22,16 @@ interface Course {
   description: string;
 }
 
-interface Enrollment {
-  user: string;
-  course: string;
-}
-
 export default function Dashboard() {
-  const { courses } = useSelector((state: RootState) => state.coursesReducer);
   const dispatch = useDispatch();
+
+  // courses from Redux (server-filtered = "my courses")
+  const { courses } = useSelector((state: RootState) => state.coursesReducer);
+
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
-  const { enrollments } = useSelector((state: RootState) => state.enrollmentsReducer);
+
+  // local state for "all courses" (unfiltered)
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
 
   const [course, setCourse] = useState<Course>({
     _id: "0",
@@ -43,32 +47,99 @@ export default function Dashboard() {
 
   const defaultImg = "/images/default-course.png";
 
-  // Helper function to check if user is enrolled in a course
+  // Check enrollment based on server-filtered courses array
   const isEnrolled = (courseId: string) => {
-    if (!currentUser) return false;
-    return enrollments.some(
-      (enrollment: Enrollment) =>
-        enrollment.user === currentUser._id &&
-        enrollment.course === courseId
-    );
+    // Check if this course exists in the server-fetched "my courses" list
+    return courses.some(course => course._id === courseId);
   };
 
-  // Faculty always see all courses, students toggle between all and enrolled
-  const displayedCourses = (currentUser?.role === "FACULTY" || showAll) 
-    ? courses 
-    : courses.filter((course) => isEnrolled(course._id));
-
-  
-  const handleCourseClick = (e: React.MouseEvent, courseId: string) => {
-    // Faculty can access any course
-    if (currentUser?.role === "FACULTY") {
-      return; 
+  // Fetch MY COURSES (server-filtered)
+  const fetchMyCourses = useCallback(async () => {
+    if (!currentUser) {
+      dispatch(setCourses([])); // Clear courses if no user is logged in
+      return;
     }
-    
-    // Non-faculty users can only access enrolled courses
-    if (!isEnrolled(courseId)) {
-      e.preventDefault();
-    
+    try {
+      const myCourses = await client.findMyCourses();
+      dispatch(setCourses(myCourses));
+    } catch (err) {
+      console.log(err);
+    }
+  }, [currentUser, dispatch]);
+
+  useEffect(() => {
+  const fetchAllCourses = async () => {
+    if (!currentUser) {
+      setAllCourses([]);
+      return;
+    }
+    try {
+      const all = await client.fetchAllCourses();
+      setAllCourses(all);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  
+  fetchAllCourses();
+}, [currentUser]);
+
+   const onAddNewCourse = async () => {
+    const newCourse = await client.createCourse(course);
+    dispatch(setCourses([ ...courses, newCourse ]));
+  };
+
+   const onDeleteCourse = async (courseId: string) => {
+    await client.deleteCourse(courseId);
+    dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
+  };
+
+   const onUpdateCourse = async () => {
+    await client.updateCourse(course);
+    dispatch(setCourses(courses.map((c) => {
+        if (c._id === course._id) { return course; }
+        else { return c; }
+    })));};
+
+
+  // Reload MY COURSES when user changes
+  useEffect(() => {
+    fetchMyCourses();
+  }, [fetchMyCourses]);
+
+
+
+  // Which list to show?
+  const displayedCourses =
+    currentUser?.role === "FACULTY"
+      ? allCourses // faculty always sees all
+      : showAll
+        ? allCourses // student toggled "All Courses"
+        : courses;   // student default: enrolled-only
+
+  // Handle enrollment with server call and refetch
+  const handleEnroll = async (courseId: string) => {
+    if (!currentUser) return;
+    try {
+      // Call server API to enroll
+      await enrollmentClient.enrollCourse(currentUser._id, courseId);
+      // Refetch MY courses from server to get updated list
+      await fetchMyCourses();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // Handle unenrollment with server call and refetch
+  const handleUnenroll = async (courseId: string) => {
+    if (!currentUser) return;
+    try {
+      // Call server API to unenroll
+      await enrollmentClient.unenrollCourse(currentUser._id, courseId);
+      // Refetch MY courses from server to get updated list
+      await fetchMyCourses();
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -76,18 +147,18 @@ export default function Dashboard() {
     <div className="p-4" id="wd-dashboard">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h1 id="wd-dashboard-title" className="mb-0">Dashboard</h1>
-        {/* toggle button is displayed only for non-faculty users */}
+
+        {/* Only students get the toggle */}
         {currentUser?.role !== "FACULTY" && (
-          <Button
-            className="btn btn-info"
-            onClick={() => setShowAll(!showAll)}
-          >
-            {showAll ? "Enrollments" : "Enrollments"}
+          <Button className="btn btn-info" onClick={() => setShowAll(!showAll)}>
+            {showAll ? "My Courses" : "All Courses"}
           </Button>
         )}
       </div>
+
       <hr />
 
+      {/* Faculty course creation */}
       {currentUser?.role === "FACULTY" && (
         <>
           <h5>
@@ -95,14 +166,14 @@ export default function Dashboard() {
             <button
               className="btn btn-primary float-end"
               id="wd-add-new-course-click"
-              onClick={() => dispatch(addNewCourse(course))}
+              onClick={onAddNewCourse}
             >
               Add
             </button>
             <button
               className="btn btn-warning float-end me-2"
               id="wd-update-course-click"
-              onClick={() => dispatch(updateCourse(course))}
+              onClick={onUpdateCourse}
             >
               Update
             </button>
@@ -126,7 +197,14 @@ export default function Dashboard() {
         </>
       )}
 
-      <h2 id="wd-dashboard-published">Published Courses ({displayedCourses.length})</h2>
+      <h2 id="wd-dashboard-published">
+        {currentUser?.role === "FACULTY"
+          ? `All Courses (${displayedCourses.length})`
+          : showAll
+            ? `All Courses (${displayedCourses.length})`
+            : `My Courses (${displayedCourses.length})`}
+      </h2>
+
       <hr />
 
       <div id="wd-dashboard-courses">
@@ -137,10 +215,9 @@ export default function Dashboard() {
             return (
               <Col key={course._id} className="wd-dashboard-course" style={{ width: "300px" }}>
                 <Card>
-                  <Link 
-                    href={`/Courses/${course._id}/Home`} 
+                  <Link
+                    href={`/Courses/${course._id}/Home`}
                     className="text-decoration-none text-dark"
-                    onClick={(e) => handleCourseClick(e, course._id)}
                   >
                     <CardImg
                       variant="top"
@@ -159,14 +236,14 @@ export default function Dashboard() {
                         {course.description}
                       </CardText>
 
-                      {/* enrollment buttons for non-faculty users */}
+                      {/* Student enrollment buttons */}
                       {currentUser && currentUser.role !== "FACULTY" && (
                         enrolled ? (
                           <Button
                             variant="danger"
                             onClick={(e) => {
                               e.preventDefault();
-                              dispatch(unenrollCourse({ user: currentUser._id, course: course._id }));
+                              handleUnenroll(course._id);
                             }}
                           >
                             Unenroll
@@ -176,7 +253,7 @@ export default function Dashboard() {
                             variant="success"
                             onClick={(e) => {
                               e.preventDefault();
-                              dispatch(enrollCourse({ user: currentUser._id, course: course._id }));
+                              handleEnroll(course._id);
                             }}
                           >
                             Enroll
@@ -184,7 +261,7 @@ export default function Dashboard() {
                         )
                       )}
 
-                      {/* course management buttons for faculty */}
+                      {/* Faculty buttons only */}
                       {currentUser?.role === "FACULTY" && (
                         <>
                           <Button variant="primary">Go</Button>
@@ -192,7 +269,7 @@ export default function Dashboard() {
                           <button
                             onClick={(event) => {
                               event.preventDefault();
-                              dispatch(deleteCourse(course._id));
+                              onDeleteCourse(course._id);
                             }}
                             className="btn btn-danger float-end"
                             id="wd-delete-course-click"

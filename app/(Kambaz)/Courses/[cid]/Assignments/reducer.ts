@@ -1,6 +1,4 @@
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import * as db from "@/app/(Kambaz)/Database";
 
 export interface Assignment {
   _id: string;
@@ -17,13 +15,16 @@ interface AssignmentsState {
 }
 
 const initialState: AssignmentsState = {
-  assignments: db.assignments,
+  assignments: [],   // ⭐ REQUIRED: empty (no DB)
 };
 
 const assignmentsSlice = createSlice({
   name: "assignments",
   initialState,
   reducers: {
+    setAssignments: (state, action: PayloadAction<Assignment[]>) => {
+      state.assignments = action.payload;
+    },
     addAssignment: (state, action: PayloadAction<Assignment>) => {
       state.assignments.push(action.payload);
     },
@@ -39,5 +40,7 @@ const assignmentsSlice = createSlice({
   },
 });
 
-export const { addAssignment, updateAssignment, deleteAssignment } = assignmentsSlice.actions;
+export const { setAssignments, addAssignment, updateAssignment, deleteAssignment } =
+  assignmentsSlice.actions;
+
 export default assignmentsSlice.reducer;
