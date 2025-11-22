@@ -10,11 +10,16 @@ export default function Session({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const currentUser = await client.profile();
-        dispatch(setCurrentUser(currentUser));
-      } catch (err) {
-        console.error(err);
-      }
+  const currentUser = await client.profile();
+  if (currentUser) {
+    dispatch(setCurrentUser(currentUser));
+  } else {
+    dispatch(setCurrentUser(null)); 
+  }
+} catch (err) {
+  console.error(err);
+  dispatch(setCurrentUser(null)); 
+}
       setPending(false);
     };
     fetchProfile();
