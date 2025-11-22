@@ -87,11 +87,13 @@ export default function Dashboard() {
    const onAddNewCourse = async () => {
     const newCourse = await client.createCourse(course);
     dispatch(setCourses([ ...courses, newCourse ]));
+    setAllCourses([...allCourses, newCourse]);
   };
 
    const onDeleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
     dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
+    setAllCourses(allCourses.filter((course) => course._id !== courseId));
   };
 
    const onUpdateCourse = async () => {
@@ -99,7 +101,12 @@ export default function Dashboard() {
     dispatch(setCourses(courses.map((c) => {
         if (c._id === course._id) { return course; }
         else { return c; }
-    })));};
+    })));
+    setAllCourses(allCourses.map((c) => {
+    if (c._id === course._id) { return course; }
+    else { return c; }
+  }));
+  };
 
 
   // Reload MY COURSES when user changes
