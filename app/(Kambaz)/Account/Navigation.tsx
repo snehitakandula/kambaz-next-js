@@ -8,14 +8,20 @@ import { RootState } from "../store";
 
 export default function AccountNavigation() {
   const currentUser = useSelector((state: RootState) => state.accountReducer.currentUser);
-  
-  const links = currentUser ? [{ label: "Profile", href: "/Account/Profile" }] :
-    [
-      { label: "Signin", href: "/Account/Signin" },
-      { label: "Signup", href: "/Account/Signup" }
-    ];
-
   const pathname = usePathname() || "";
+
+
+  const links = currentUser
+    ? [{ label: "Profile", href: "/Account/Profile" }]
+    : [
+        { label: "Signin", href: "/Account/Signin" },
+        { label: "Signup", href: "/Account/Signup" }
+      ];
+
+  
+  if (currentUser && currentUser.role === "ADMIN") {
+    links.push({ label: "Users", href: "/Account/Users" });
+  }
 
   return (
     <>
@@ -39,14 +45,16 @@ export default function AccountNavigation() {
           font-weight: 600;
         }
       `}</style>
-      
+
       <Nav variant="pills" className="flex-column account-nav">
         {links.map((link) => (
           <NavItem key={link.href}>
             <NavLink
               as={Link}
               href={link.href}
-              active={pathname.toLowerCase().endsWith(link.href.toLowerCase().replace("/account/", ""))}
+              active={pathname.toLowerCase().endsWith(
+                link.href.toLowerCase().replace("/account/", "")
+              )}
             >
               {link.label}
             </NavLink>
