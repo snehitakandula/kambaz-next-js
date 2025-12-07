@@ -55,7 +55,7 @@ export const findMyCourses = async () => {
 };
 
 export const createCourse = async (course: Course) => {
-  const { data } = await axiosWithCredentials.post(`${USERS_API}/current/courses`, course);
+  const { data } = await axiosWithCredentials.post(`${COURSES_API}`, course);
   return data;
 };
 
@@ -82,19 +82,23 @@ export const createModuleForCourse = async (courseId: string, module: Partial<Mo
   return response.data;
 };
 
-const MODULES_API = `${HTTP_SERVER}/api/modules`;
-export const deleteModule = async (moduleId: string) => {
- const response = await axios.delete(`${MODULES_API}/${moduleId}`);
+export const deleteModule = async (courseId: string, moduleId: string) => {
+ const response = await axios.delete(
+   `${COURSES_API}/${courseId}/modules/${moduleId}`
+ );
  return response.data;
 };
 
-export const updateModule = async (module: Partial<Module>) => {
-  const response = await axios.put(
-    `${MODULES_API}/${module._id}`,
+
+export const updateModule = async (courseId: string, module: Partial<Module>) => {
+  const { data } = await axios.put(
+    `${COURSES_API}/${courseId}/modules/${module._id}`,
     module
   );
-  return response.data;
+  return data;
 };
+
+
 
 // ----------------- ASSIGNMENTS API --------------------
 const ASSIGNMENTS_API = `${HTTP_SERVER}/api/assignments`;

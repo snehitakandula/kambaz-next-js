@@ -13,18 +13,35 @@ import { RootState } from "../../../store";
 import { editModule, updateModule, setModules } from "./reducer";
 import * as client from "../../client";
 
+interface Module {
+  _id: string;
+  name: string;
+  description?: string;
+  course: string;
+  lessons: {
+    _id: string;
+    name: string;
+    description?: string;
+  }[]; 
+  editing?: boolean;
+}
+
 
 
 export default function Modules() {
-  const { cid } = useParams();
+  const params = useParams();
+const cid = params.cid as string;
+
   const [moduleName, setModuleName] = useState("");
 
   const dispatch = useDispatch();
 
-  const onRemoveModule = async (moduleId: string) => {
-    await client.deleteModule(moduleId);
-    dispatch(setModules(modules.filter((m) => m._id !== moduleId)));
-  };
+ const onRemoveModule = async (moduleId: string) => {
+   await client.deleteModule(cid, moduleId);
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   dispatch(setModules(modules.filter((m: any) => m._id !== moduleId)));
+ };
+
 
 
   const onCreateModuleForCourse = async () => {
@@ -34,11 +51,16 @@ export default function Modules() {
     dispatch(setModules([...modules, createdModule]));
   };
 
-const onUpdateModule = async (module: typeof modules[0]) => {
-  await client.updateModule(module);
-  const newModules = modules.map((m) => m._id === module._id ? module : m);
+ const onUpdateModule = async (module: Module) => {
+  await client.updateModule(cid, module);
+
+  const newModules = modules.map((m: Module) =>
+    m._id === module._id ? module : m
+  );
+
   dispatch(setModules(newModules));
 };
+
 
 
 
