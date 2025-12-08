@@ -95,7 +95,7 @@ export default function Quizzes() {
     if (!courseId) return;
     const created = await client.createQuizForCourse(courseId);
     dispatch(addQuiz(created));
-    window.location.href = `/Courses/${courseId}/Quizzes/${created._id}/Edit`;
+    window.location.href = `/Courses/${courseId}/quizzes/${created._id}/Edit`;
   };
 
   const handleDelete = async (id: string) => {
