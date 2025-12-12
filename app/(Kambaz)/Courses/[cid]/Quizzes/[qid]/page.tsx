@@ -6,16 +6,17 @@ import { Button, Table } from "react-bootstrap";
 import * as client from "../../../client";
 import type { Quiz } from "../../../client";
 import { RootState } from "@/app/(Kambaz)/store";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { updateQuizInState } from "../reducer";
 
 export default function QuizDetails() {
   const { cid, qid } = useParams();
   const courseId = cid as string;
   const quizId = qid as string;
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [lastAttempt, setLastAttempt] = useState<any | null>(null);
 
   const currentUser = useSelector(
     (state: RootState) => state.accountReducer.currentUser
@@ -27,13 +28,9 @@ export default function QuizDetails() {
     const load = async () => {
       const q = await client.findQuizById(quizId);
       setQuiz(q);
-      if (isStudent) {
-        const attempt = await client.findLastAttemptForQuiz(quizId);
-        setLastAttempt(attempt);
-      }
     };
     load();
-  }, [quizId, isStudent]);
+  }, [quizId]);
 
   if (!quiz) return <div className="p-3">Loading...</div>;
 
@@ -44,23 +41,30 @@ export default function QuizDetails() {
   const navToTake = () =>
     router.push(`/Courses/${courseId}/Quizzes/${quizId}/Take`);
 
+  const togglePublish = async () => {
+    const updated = await client.setQuizPublished(
+      quiz._id as string,
+      !quiz.published
+    );
+    setQuiz(updated);                     // local state
+    dispatch(updateQuizInState(updated)); // global Redux (list + menu + icon)
+  };
+
   return (
     <div className="p-3" style={{ maxWidth: "900px" }}>
       <h3>{quiz.title}</h3>
+
       <div
         className="mb-3"
         dangerouslySetInnerHTML={{ __html: quiz.description || "" }}
       />
 
-      {isStudent && lastAttempt && (
-        <div className="alert alert-info">
-          Last attempt: score {lastAttempt.score} / {quiz.points} —{" "}
-          {new Date(lastAttempt.submittedAt).toLocaleString()}
-        </div>
-      )}
-
       <Table bordered size="sm" className="w-auto">
         <tbody>
+          <tr>
+            <th>Status</th>
+            <td>{quiz.published ? "Published" : "Unpublished"}</td>
+          </tr>
           <tr>
             <th>Quiz Type</th>
             <td>{quiz.quizType}</td>
@@ -83,10 +87,7 @@ export default function QuizDetails() {
           </tr>
           <tr>
             <th>Multiple Attempts</th>
-            <td>
-              {quiz.multipleAttempts ? "Yes" : "No"}{" "}
-              {quiz.multipleAttempts && `(Max ${quiz.maxAttempts})`}
-            </td>
+            <td>{quiz.multipleAttempts ? "Yes" : "No"}</td>
           </tr>
           <tr>
             <th>Show Correct Answers</th>
@@ -126,6 +127,12 @@ export default function QuizDetails() {
       <div className="d-flex gap-2 mt-3">
         {isFaculty && (
           <>
+            <Button
+              variant={quiz.published ? "secondary" : "success"}
+              onClick={togglePublish}
+            >
+              {quiz.published ? "Unpublish" : "Publish"}
+            </Button>
             <Button variant="secondary" onClick={navToPreview}>
               Preview
             </Button>
@@ -134,7 +141,8 @@ export default function QuizDetails() {
             </Button>
           </>
         )}
-        {isStudent && (
+
+        {isStudent && quiz.published && (
           <Button variant="primary" onClick={navToTake}>
             Take Quiz
           </Button>
