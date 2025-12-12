@@ -482,12 +482,13 @@ function QuestionEditor({
   };
 
   const markCorrectChoice = (idx: number) => {
-    const choices = (editingQuestion.choices || []).map((c, i) => ({
-      ...c,
-      correct: i === idx ? !c.correct : c.correct,
-    }));
-    setChoices(choices);
-  };
+  const choices = (question.choices || []).map((c, i) => ({
+    ...c,
+    correct: i === idx,
+  }));
+  setChoices(choices);
+};
+
 
   const removeChoice = (idx: number) => {
     const choices = [...(editingQuestion.choices || [])];

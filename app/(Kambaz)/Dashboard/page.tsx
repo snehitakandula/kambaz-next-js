@@ -22,6 +22,15 @@ interface Course {
   description: string;
 }
 
+const uniqById = <T extends { _id: string }>(arr: T[]) => {
+  const map = new Map<string, T>();
+  arr.forEach((item) => {
+    if (item?._id) map.set(item._id, item);
+  });
+  return Array.from(map.values());
+};
+
+
 export default function Dashboard() {
   const dispatch = useDispatch();
 
@@ -61,7 +70,7 @@ export default function Dashboard() {
     }
     try {
       const myCourses = await client.findMyCourses();
-      dispatch(setCourses(myCourses));
+      dispatch(setCourses(uniqById(myCourses)));
     } catch (err) {
       console.log(err);
     }
@@ -69,39 +78,30 @@ export default function Dashboard() {
 
   useEffect(() => {
   const fetchAllCourses = async () => {
-    if (!currentUser) {
+    if (!currentUser || currentUser.role !== "FACULTY") {
       setAllCourses([]);
       return;
     }
-    try {
-      const all = await client.fetchAllCourses();
-      setAllCourses(all);
-    } catch (err) {
-      console.log(err);
-    }
+    const all = await client.fetchAllCourses();
+    setAllCourses(uniqById(all));
   };
-  
+
   fetchAllCourses();
 }, [currentUser]);
 
+
    const onAddNewCourse = async () => {
     const newCourse = await client.createCourse(course);
-    dispatch(setCourses([ ...courses, newCourse ]));
     setAllCourses([...allCourses, newCourse]);
   };
 
    const onDeleteCourse = async (courseId: string) => {
     await client.deleteCourse(courseId);
-    dispatch(setCourses(courses.filter((course) => course._id !== courseId)));
     setAllCourses(allCourses.filter((course) => course._id !== courseId));
   };
 
    const onUpdateCourse = async () => {
     await client.updateCourse(course);
-    dispatch(setCourses(courses.map((c) => {
-        if (c._id === course._id) { return course; }
-        else { return c; }
-    })));
     setAllCourses(allCourses.map((c) => {
     if (c._id === course._id) { return course; }
     else { return c; }
@@ -156,11 +156,21 @@ export default function Dashboard() {
         <h1 id="wd-dashboard-title" className="mb-0">Dashboard</h1>
 
         {/* Only students get the toggle */}
-        {currentUser?.role !== "FACULTY" && (
-          <Button className="btn btn-info" onClick={() => setShowAll(!showAll)}>
-            {showAll ? "My Courses" : "All Courses"}
-          </Button>
-        )}
+       {currentUser?.role !== "FACULTY" && (
+  <Button
+    className="btn btn-info"
+    onClick={async () => {
+      if (!showAll) {
+        const all = await client.fetchAllCourses();
+        setAllCourses(all);
+      }
+      setShowAll(!showAll);
+    }}
+  >
+    {showAll ? "My Courses" : "All Courses"}
+  </Button>
+)}
+
       </div>
 
       <hr />
