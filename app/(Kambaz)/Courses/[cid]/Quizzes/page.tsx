@@ -97,6 +97,7 @@ export default function Quizzes() {
   title: "New Quiz",
 });
     dispatch(addQuiz(created));
+    window.location.href = `/Courses/${courseId}/Quizzes/${created._id}/Edit`;
   };
 
   const handleDelete = async (id: string) => {
