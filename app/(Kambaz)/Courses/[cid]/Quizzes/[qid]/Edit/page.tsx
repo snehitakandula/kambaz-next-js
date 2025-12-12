@@ -45,13 +45,29 @@ q.questions = q.questions || [];
   }, [quizId]);
 
   const updateQuestion = useCallback((index: number, newQ: Question) => {
-    setQuiz((prevQuiz) => {
-      if (!prevQuiz) return prevQuiz;
-      const qs = [...prevQuiz.questions];
-      qs[index] = newQ;
-      return { ...prevQuiz, questions: qs };
-    });
-  }, []);
+    const saveQuestion = async () => {
+      try {
+        if (newQ._id) {
+          // Update existing question
+          await client.updateQuestion(quizId, newQ._id, newQ);
+        } else {
+          // Create new question
+          const created = await client.createQuestion(quizId, newQ);
+          newQ._id = created._id;
+        }
+        
+        setQuiz((prevQuiz) => {
+          if (!prevQuiz) return prevQuiz;
+          const qs = [...prevQuiz.questions];
+          qs[index] = newQ;
+          return { ...prevQuiz, questions: qs };
+        });
+      } catch (error) {
+        console.error("Failed to save question:", error);
+      }
+    };
+    saveQuestion();
+  }, [quizId]);
 
   if (!quiz) return <div className="p-3">Loading...</div>;
 
@@ -73,7 +89,7 @@ q.questions = q.questions || [];
 
   const cancel = () => router.push(`/Courses/${courseId}/Quizzes`);
 
-  const addQuestion = () => {
+  const addQuestion = async () => {
     const newQ: Question = {
       title: "New Question",
       questionText: "",
@@ -84,13 +100,28 @@ q.questions = q.questions || [];
         { text: "Choice 2", correct: false },
       ],
     };
-    setQuiz({ ...quiz, questions: [...quiz.questions, newQ] });
+
+    try {
+      const created = await client.createQuestion(quizId, newQ);
+      setQuiz({ ...quiz, questions: [...quiz.questions, created] });
+    } catch (error) {
+      console.error("Failed to add question:", error);
+    }
   };
 
-  const removeQuestion = (index: number) => {
-    const qs = [...quiz.questions];
-    qs.splice(index, 1);
-    setQuiz({ ...quiz, questions: qs });
+  const removeQuestion = async (index: number) => {
+    const question = quiz.questions[index];
+
+    try {
+      if (question._id) {
+        await client.deleteQuestion(quizId, question._id);
+      }
+      const qs = [...quiz.questions];
+      qs.splice(index, 1);
+      setQuiz({ ...quiz, questions: qs });
+    } catch (error) {
+      console.error("Failed to delete question:", error);
+    }
   };
 
   return (

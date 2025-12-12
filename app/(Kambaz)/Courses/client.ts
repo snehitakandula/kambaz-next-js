@@ -310,3 +310,36 @@ export const submitQuizAttempt = async (
   );
   return response.data;
 };
+// ---------- QUESTIONS ----------
+export const findQuestionsForQuiz = async (quizId: string) => {
+  const { data } = await axios.get(`${QUIZZES_API}/${quizId}/questions`);
+  return data;
+};
+
+export const findQuestionById = async (quizId: string, questionId: string) => {
+  const { data } = await axios.get(`${QUIZZES_API}/${quizId}/questions/${questionId}`);
+  return data;
+};
+
+export const createQuestion = async (quizId: string, question: Partial<Question>) => {
+  const { data } = await axiosWithCredentials.post(
+    `${QUIZZES_API}/${quizId}/questions`,
+    question
+  );
+  return data;
+};
+
+export const updateQuestion = async (quizId: string, questionId: string, question: Partial<Question>) => {
+  const { data } = await axiosWithCredentials.put(
+    `${QUIZZES_API}/${quizId}/questions/${questionId}`,
+    question
+  );
+  return data;
+};
+
+export const deleteQuestion = async (quizId: string, questionId: string) => {
+  const { data } = await axiosWithCredentials.delete(
+    `${QUIZZES_API}/${quizId}/questions/${questionId}`
+  );
+  return data;
+};
