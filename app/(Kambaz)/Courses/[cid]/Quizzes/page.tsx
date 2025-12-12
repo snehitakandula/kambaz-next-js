@@ -97,7 +97,6 @@ export default function Quizzes() {
   title: "New Quiz",
 });
     dispatch(addQuiz(created));
-    window.location.href = `/Courses/${courseId}/quizzes/${created._id}/Edit`;
   };
 
   const handleDelete = async (id: string) => {
@@ -165,7 +164,6 @@ export default function Quizzes() {
                   }
                   title={q.isPublished ? "Published" : "Unpublished"}
                 >
-                  {q.isPublished ? "✅" : "🚫"}
                 </div>
 
                 <div>
