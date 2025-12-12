@@ -65,7 +65,12 @@ export default function Quizzes() {
   useEffect(() => {
     const load = async () => {
       if (!courseId) return;
-      const data: Quiz[] = await client.findQuizzesForCourse(courseId);
+      let data: Quiz[] = await client.findQuizzesForCourse(courseId);
+
+      // Filter out unpublished quizzes for students
+      if (isStudent) {
+        data = data.filter(q => q.published);
+      }
 
       // If student, optionally fetch last attempt scores
       if (isStudent) {

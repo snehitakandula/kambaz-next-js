@@ -119,188 +119,275 @@ q.questions = q.questions || [];
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label className="fw-bold">Description</Form.Label>
-            <Card body className="border">
-              <div
-                contentEditable
-                suppressContentEditableWarning
-                onInput={(e) =>
-                  updateField("description", e.currentTarget.innerHTML)
-                }
-                dangerouslySetInnerHTML={{ __html: quiz.description || "" }}
-              />
+            <Form.Label className="fw-bold">Quiz Instructions:</Form.Label>
+            <Card className="border">
+              <Card.Header className="bg-light p-2">
+                <div className="d-flex gap-1 flex-wrap">
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => document.execCommand("bold")}
+                    title="Bold"
+                  >
+                    <strong>B</strong>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => document.execCommand("italic")}
+                    title="Italic"
+                  >
+                    <em>I</em>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => document.execCommand("underline")}
+                    title="Underline"
+                  >
+                    <u>U</u>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => document.execCommand("insertUnorderedList")}
+                    title="Bullet List"
+                  >
+                    • List
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => document.execCommand("insertOrderedList")}
+                    title="Numbered List"
+                  >
+                    1. List
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-outline-secondary"
+                    onClick={() => {
+                      const url = prompt("Enter URL:");
+                      if (url) document.execCommand("createLink", false, url);
+                    }}
+                    title="Insert Link"
+                  >
+                    Link
+                  </button>
+                </div>
+              </Card.Header>
+              <Card.Body>
+                <div
+                  contentEditable
+                  suppressContentEditableWarning
+                  onInput={(e) =>
+                    updateField("description", e.currentTarget.innerHTML)
+                  }
+                  dangerouslySetInnerHTML={{ __html: quiz.description || "" }}
+                  style={{ minHeight: "150px", outline: "none" }}
+                />
+              </Card.Body>
             </Card>
           </Form.Group>
 
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Quiz Type</Form.Label>
-                <Form.Select
-                  value={quiz.quizType}
-                  onChange={(e) => updateField("quizType", e.target.value)}
-                >
-                  <option>GRADED_QUIZ</option>
-                  <option>PRACTICE_QUIZ</option>
-                  <option>GRADED_SURVEY</option>
-                  <option>UNGRADED_SURVEY</option>
-                </Form.Select>
-              </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Quiz Type</Form.Label>
+            <Form.Select
+              value={quiz.quizType || "Graded Quiz"}
+              onChange={(e) => updateField("quizType", e.target.value)}
+            >
+              <option value="Graded Quiz">Graded Quiz</option>
+              <option value="Practice Quiz">Practice Quiz</option>
+              <option value="Graded Survey">Graded Survey</option>
+              <option value="Ungraded Survey">Ungraded Survey</option>
+            </Form.Select>
+          </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Assignment Group</Form.Label>
-                <Form.Select
-                  value={quiz.assignmentGroup}
-                  onChange={(e) =>
-                    updateField("assignmentGroup", e.target.value)
-                  }
-                >
-                  <option>QUIZZES</option>
-                  <option>EXAMS</option>
-                  <option>ASSIGNMENTS</option>
-                  <option>PROJECT</option>
-                </Form.Select>
-              </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Points</Form.Label>
+            <Form.Control
+              type="number"
+              value={quiz.points || 0}
+              onChange={(e) => updateField("points", Number(e.target.value))}
+            />
+            <Form.Text className="text-muted">
+              Current total from questions: {quiz.questions?.reduce((sum, q) => sum + (q.points || 0), 0) || 0}
+            </Form.Text>
+          </Form.Group>
 
-              <Form.Group className="mb-3">
-                <Form.Label>Time Limit (minutes)</Form.Label>
+          <Form.Group className="mb-3">
+            <Form.Label>Assignment Group</Form.Label>
+            <Form.Select
+              value={quiz.assignmentGroup || "QUIZZES"}
+              onChange={(e) =>
+                updateField("assignmentGroup", e.target.value)
+              }
+            >
+              <option value="QUIZZES">Quizzes</option>
+              <option value="EXAMS">Exams</option>
+              <option value="ASSIGNMENTS">Assignments</option>
+              <option value="PROJECT">Project</option>
+            </Form.Select>
+          </Form.Group>
+
+          <h5 className="mt-4">Options</h5>
+          
+          <Form.Group className="mb-2">
+            <Form.Check
+              type="checkbox"
+              label="Shuffle Answers"
+              checked={quiz.shuffleAnswers ?? true}
+              onChange={(e) =>
+                updateField("shuffleAnswers", e.target.checked)
+              }
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-2">
+            <Form.Check
+              type="checkbox"
+              label="Time Limit"
+              checked={!!quiz.timeLimit}
+              onChange={(e) =>
+                updateField("timeLimit", e.target.checked ? 20 : 0)
+              }
+            />
+            {!!quiz.timeLimit && (
+              <div className="d-flex align-items-center mt-2 ms-4">
                 <Form.Control
                   type="number"
                   value={quiz.timeLimit}
                   onChange={(e) =>
                     updateField("timeLimit", Number(e.target.value))
                   }
+                  style={{ width: "100px" }}
+                  className="me-2"
                 />
-              </Form.Group>
+                <span>Minutes</span>
+              </div>
+            )}
+          </Form.Group>
 
+          <Form.Group className="mb-2">
+            <Form.Check
+              type="checkbox"
+              label="Allow Multiple Attempts"
+              checked={quiz.multipleAttempts ?? false}
+              onChange={(e) =>
+                updateField("multipleAttempts", e.target.checked)
+              }
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Show Correct Answers</Form.Label>
+            <Form.Select
+              value={quiz.showCorrectAnswers || "immediately"}
+              onChange={(e) =>
+                updateField("showCorrectAnswers", e.target.value)
+              }
+            >
+              <option value="immediately">Immediately</option>
+              <option value="after_submission">After Submission</option>
+              <option value="after_due_date">After Due Date</option>
+              <option value="never">Never</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Access Code</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Leave blank for no access code"
+              value={quiz.accessCode || ""}
+              onChange={(e) =>
+                updateField("accessCode", e.target.value)
+              }
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-2">
+            <Form.Check
+              type="checkbox"
+              label="One Question at a Time"
+              checked={quiz.oneQuestionAtATime ?? true}
+              onChange={(e) =>
+                updateField("oneQuestionAtATime", e.target.checked)
+              }
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-2">
+            <Form.Check
+              type="checkbox"
+              label="Webcam Required"
+              checked={quiz.webcamRequired ?? false}
+              onChange={(e) =>
+                updateField("webcamRequired", e.target.checked)
+              }
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Check
+              type="checkbox"
+              label="Lock Questions After Answering"
+              checked={quiz.lockQuestionsAfterAnswering ?? false}
+              onChange={(e) =>
+                updateField("lockQuestionsAfterAnswering", e.target.checked)
+              }
+            />
+          </Form.Group>
+
+          <Card className="mt-4 mb-3">
+            <Card.Header className="bg-light">
+              <strong>Assign</strong>
+            </Card.Header>
+            <Card.Body>
               <Form.Group className="mb-3">
-                <Form.Check
-                  type="switch"
-                  label="Shuffle Answers"
-                  checked={quiz.shuffleAnswers}
-                  onChange={(e) =>
-                    updateField("shuffleAnswers", e.target.checked)
-                  }
-                />
-              </Form.Group>
-            </Col>
-
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Check
-                  type="switch"
-                  label="Multiple Attempts"
-                  checked={quiz.multipleAttempts}
-                  onChange={(e) =>
-                    updateField("multipleAttempts", e.target.checked)
-                  }
-                />
+                <Form.Label>Assign to</Form.Label>
+                <Form.Control type="text" defaultValue="Everyone" readOnly />
               </Form.Group>
 
-              {quiz.multipleAttempts && (
-                <Form.Group className="mb-3">
-                  <Form.Label>How Many Attempts</Form.Label>
-                  <Form.Control
-                    type="number"
-                    value={quiz.maxAttempts || 1}
-                    onChange={(e) =>
-                      updateField("maxAttempts", Number(e.target.value))
-                    }
-                  />
-                </Form.Group>
-              )}
-
-              <Form.Group className="mb-3">
-                <Form.Label>Show Correct Answers</Form.Label>
-                <Form.Control
-                  value={quiz.showCorrectAnswers}
-                  onChange={(e) =>
-                    updateField("showCorrectAnswers", e.target.value)
-                  }
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Label>Access Code</Form.Label>
-                <Form.Control
-                  value={quiz.accessCode}
-                  onChange={(e) =>
-                    updateField("accessCode", e.target.value)
-                  }
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3">
-                <Form.Check
-                  type="switch"
-                  label="One Question at a Time"
-                  checked={quiz.oneQuestionAtATime}
-                  onChange={(e) =>
-                    updateField("oneQuestionAtATime", e.target.checked)
-                  }
-                />
-                <Form.Check
-                  type="switch"
-                  label="Webcam Required"
-                  checked={quiz.webcamRequired}
-                  onChange={(e) =>
-                    updateField("webcamRequired", e.target.checked)
-                  }
-                />
-                <Form.Check
-                  type="switch"
-                  label="Lock Questions After Answering"
-                  checked={quiz.lockQuestionsAfterAnswering}
-                  onChange={(e) =>
-                    updateField(
-                      "lockQuestionsAfterAnswering",
-                      e.target.checked
-                    )
-                  }
-                />
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <h5>Dates</h5>
-          <Row>
-            <Col md={4}>
               <Form.Group className="mb-3">
                 <Form.Label>Due</Form.Label>
                 <Form.Control
-                  type="datetime-local"
+                  type="date"
                   value={quiz.dueDate || ""}
                   onChange={(e) =>
                     updateField("dueDate", e.target.value || undefined)
                   }
                 />
               </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Available From</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={quiz.availableDate || ""}
-                  onChange={(e) =>
-                    updateField("availableDate", e.target.value || undefined)
-                  }
-                />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Until</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={quiz.untilDate || ""}
-                  onChange={(e) =>
-                    updateField("untilDate", e.target.value || undefined)
-                  }
-                />
-              </Form.Group>
-            </Col>
-          </Row>
+
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Available from</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={quiz.availableDate || ""}
+                      onChange={(e) =>
+                        updateField("availableDate", e.target.value || undefined)
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Until</Form.Label>
+                    <Form.Control
+                      type="date"
+                      value={quiz.untilDate || ""}
+                      onChange={(e) =>
+                        updateField("untilDate", e.target.value || undefined)
+                      }
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+            </Card.Body>
+          </Card>
         </div>
       )}
 
