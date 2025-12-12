@@ -93,7 +93,9 @@ export default function Quizzes() {
 
   const handleCreate = async () => {
     if (!courseId) return;
-    const created = await client.createQuizForCourse(courseId);
+    const created = await client.createQuizForCourse(courseId, {
+  title: "New Quiz",
+});
     dispatch(addQuiz(created));
     window.location.href = `/Courses/${courseId}/quizzes/${created._id}/Edit`;
   };
@@ -107,7 +109,7 @@ export default function Quizzes() {
   const handleTogglePublish = async (quiz: Quiz) => {
     const updated = await client.setQuizPublished(
       quiz._id as string,
-      !quiz.isPublished
+      !quiz.published
     );
     dispatch(updateQuizInState(updated));
   };

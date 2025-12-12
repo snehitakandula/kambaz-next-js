@@ -43,8 +43,78 @@ interface Assignment {
   points: number;
 }
 
+export interface Quiz {
+  _id?: string;
+  title: string;
+  course: string;
+  description?: string;
+  points?: number;
+  published?: boolean;
+  dueDate?: string;
+  availableFrom?: string;
+  availableUntil?: string;
+}
+
+// ---------- QUIZ TYPES ----------
+
+export type QuestionType =
+  | "MULTIPLE_CHOICE"
+  | "TRUE_FALSE"
+  | "FILL_IN_BLANK";
+
+export interface Choice {
+  text: string;
+  correct: boolean;
+}
+
+export interface Question {
+  _id?: string;
+  title: string;
+  points: number;
+  type: QuestionType;
+  questionText: string;
+
+  choices?: Choice[];
+  correctBoolean?: boolean;
+  correctAnswers?: string[];
+}
+
+export interface Quiz {
+  _id?: string;
+  title: string;
+  description?: string;
+  course: string;
+
+  quizType: string;
+  assignmentGroup: string;
+
+  timeLimit: number;
+  shuffleAnswers: boolean;
+  multipleAttempts: boolean;
+  maxAttempts?: number;
+
+  showCorrectAnswers: string;
+  accessCode?: string;
+
+  oneQuestionAtATime: boolean;
+  webcamRequired: boolean;
+  lockQuestionsAfterAnswering: boolean;
+
+  dueDate?: string;
+  availableDate?: string;
+  untilDate?: string;
+
+  published?: boolean;
+
+  questions: Question[];
+}
+
+
+
+
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
+const QUIZZES_API = `${HTTP_SERVER}/api/quizzes`;
 
 // ---------- COURSES ----------
 export const fetchAllCourses = async () => {
@@ -173,4 +243,70 @@ export const deleteAssignment = async (assignmentId: string) => {
     `${ASSIGNMENTS_API}/${assignmentId}`
   );
   return data;
+};
+
+
+export const findQuizzesForCourse = async (courseId: string) => {
+  const { data } = await axios.get(`${COURSES_API}/${courseId}/quizzes`);
+  return data;
+};
+
+export const findQuizById = async (quizId: string) => {
+  const { data } = await axios.get(`${QUIZZES_API}/${quizId}`);
+  return data;
+};
+
+export const createQuizForCourse = async (
+  courseId: string,
+  quiz: Partial<Quiz>
+) => {
+  const { data } = await axiosWithCredentials.post(
+    `${COURSES_API}/${courseId}/quizzes`,
+    quiz
+  );
+  return data;
+};
+
+export const updateQuiz = async (quizId: string, quiz: Partial<Quiz>) => {
+  const { data } = await axiosWithCredentials.put(
+    `${QUIZZES_API}/${quizId}`,
+    quiz
+  );
+  return data;
+};
+
+export const deleteQuiz = async (quizId: string) => {
+  const { data } = await axiosWithCredentials.delete(
+    `${QUIZZES_API}/${quizId}`
+  );
+  return data;
+};
+
+export const setQuizPublished = async (
+  quizId: string,
+  published: boolean
+) => {
+  const { data } = await axiosWithCredentials.put(
+    `${QUIZZES_API}/${quizId}`,
+    { published }
+  );
+  return data;
+};
+
+export const findLastAttemptForQuiz = async (quizId: string) => {
+  const { data } = await axiosWithCredentials.get(
+    `${QUIZZES_API}/${quizId}/attempts/last`
+  );
+  return data;
+};
+
+export const submitQuizAttempt = async (
+  quizId: string,
+  answers: any[]
+) => {
+  const response = await axios.post(
+    `${QUIZZES_API}/${quizId}/attempts`,
+    answers
+  );
+  return response.data;
 };

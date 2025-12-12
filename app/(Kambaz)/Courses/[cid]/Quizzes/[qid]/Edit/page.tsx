@@ -21,9 +21,10 @@ import { useDispatch } from "react-redux";
 import { updateQuizInState } from "../../reducer";
 
 export default function QuizEditPage() {
-  const { cid, qid } = useParams();
-  const courseId = cid as string;
-  const quizId = qid as string;
+const params = useParams<{ cid: string; qid: string }>();
+const courseId = params.cid;
+const quizId = params.qid;
+
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -34,8 +35,9 @@ export default function QuizEditPage() {
 
   useEffect(() => {
     const load = async () => {
-      const q = await client.findQuizById(quizId);
-      if (!q.questions) q.questions = [];
+      const q: Quiz = await client.findQuizById(quizId);
+q.questions = q.questions || [];
+
       setQuiz(q);
     };
     load();
@@ -43,12 +45,13 @@ export default function QuizEditPage() {
 
   if (!quiz) return <div className="p-3">Loading...</div>;
 
-  const updateField = (field: keyof Quiz, value: any) => {
-    setQuiz({ ...quiz, [field]: value });
-  };
+  const updateField = <K extends keyof Quiz>(field: K, value: Quiz[K]) => {
+  setQuiz({ ...quiz, [field]: value });
+};
+
 
   const saveAndGoToDetails = async (publish?: boolean) => {
-    const updated = await client.updateQuiz(quiz);
+    const updated = await client.updateQuiz(quizId, quiz);
     dispatch(updateQuizInState(updated));
     if (publish) {
       await client.setQuizPublished(quizId, true);
@@ -67,8 +70,8 @@ export default function QuizEditPage() {
       points: 1,
       type: "MULTIPLE_CHOICE",
       choices: [
-        { text: "Choice 1", isCorrect: true },
-        { text: "Choice 2", isCorrect: false },
+        { text: "Choice 1", correct: true },
+        { text: "Choice 2", correct: false },
       ],
     };
     setQuiz({ ...quiz, questions: [...quiz.questions, newQ] });
@@ -365,14 +368,14 @@ function QuestionEditor({
     const choices = question.choices || [];
     setChoices([
       ...choices,
-      { text: `Choice ${choices.length + 1}`, isCorrect: false },
+      { text: `Choice ${choices.length + 1}`, correct: false },
     ]);
   };
 
   const markCorrectChoice = (idx: number) => {
     const choices = (question.choices || []).map((c, i) => ({
       ...c,
-      isCorrect: i === idx,
+      Correct: i === idx,
     }));
     setChoices(choices);
   };
@@ -479,7 +482,7 @@ function QuestionEditor({
                 <Form.Check
                   type="radio"
                   name={`q-${index}-correct`}
-                  checked={choice.isCorrect}
+                  checked={choice.correct}
                   onChange={() => markCorrectChoice(idx)}
                   className="me-2"
                 />

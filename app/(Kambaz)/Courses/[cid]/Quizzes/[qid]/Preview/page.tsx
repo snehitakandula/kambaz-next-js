@@ -38,7 +38,7 @@ export default function QuizPreview() {
       const ans = answers[q._id as string];
 
       if (q.type === "MULTIPLE_CHOICE") {
-        const correct = q.choices?.find((c) => c.isCorrect)?._id;
+        const correct = q.choices?.findIndex((c) => c.correct);
         if (ans === correct) total += q.points;
       } else if (q.type === "TRUE_FALSE") {
         if (ans === q.correctBoolean) total += q.points;
@@ -81,12 +81,14 @@ export default function QuizPreview() {
             {q.type === "MULTIPLE_CHOICE" &&
               q.choices?.map((c) => (
                 <Form.Check
-                  key={c._id}
+                  key={idx}
+
                   type="radio"
                   name={`q-${q._id}`}
                   label={c.text}
-                  checked={answers[q._id as string] === c._id}
-                  onChange={() => setAnswer(q._id as string, c._id)}
+                  checked={answers[q._id as string] === idx}
+onChange={() => setAnswer(q._id as string, idx)}
+
                 />
               ))}
 

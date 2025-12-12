@@ -68,12 +68,12 @@ export default function TakeQuiz() {
             {q.type === "MULTIPLE_CHOICE" &&
               q.choices?.map((c) => (
                 <Form.Check
-                  key={c._id}
+                  key={idx}
                   type="radio"
                   name={`q-${q._id}`}
                   label={c.text}
-                  checked={answers[q._id as string] === `choice:${c._id}`}
-                  onChange={() => setAnswer(q._id as string, `choice:${c._id}`)}
+                  checked={answers[q._id as string] === idx}
+                  onChange={() => setAnswer(q._id as string, idx)}
                 />
               ))}
 
