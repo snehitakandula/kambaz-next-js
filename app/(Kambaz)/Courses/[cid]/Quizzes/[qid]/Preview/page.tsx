@@ -30,7 +30,7 @@ export default function QuizPreview() {
   };
 
   const grade = () => {
-    if (!quiz) return;
+    if (!quiz || !quiz.questions) return;
 
     let total = 0;
 
@@ -66,7 +66,7 @@ export default function QuizPreview() {
         </div>
       )}
 
-      {quiz.questions.map((q: Question, idx) => (
+      {quiz.questions?.map((q: Question, idx) => (
         <Card className="mb-3" key={q._id || idx}>
           <Card.Header>
             <strong>
