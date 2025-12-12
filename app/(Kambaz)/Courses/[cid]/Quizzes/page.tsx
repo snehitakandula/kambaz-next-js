@@ -83,9 +83,19 @@ export default function Quizzes() {
             }
           })
         );
-        dispatch(setQuizzes(withScores));
+        const sorted = withScores.sort((a, b) => {
+          const dateA = a.availableDate ? new Date(a.availableDate).getTime() : 0;
+          const dateB = b.availableDate ? new Date(b.availableDate).getTime() : 0;
+          return dateA - dateB;
+        });
+        dispatch(setQuizzes(sorted));
       } else {
-        dispatch(setQuizzes(data));
+        const sorted = data.sort((a, b) => {
+          const dateA = a.availableDate ? new Date(a.availableDate).getTime() : 0;
+          const dateB = b.availableDate ? new Date(b.availableDate).getTime() : 0;
+          return dateA - dateB;
+        });
+        dispatch(setQuizzes(sorted));
       }
     };
     load();
