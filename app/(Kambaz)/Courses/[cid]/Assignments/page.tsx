@@ -2,9 +2,21 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ListGroup, ListGroupItem, Button, Form, InputGroup } from "react-bootstrap";
+import {
+  ListGroup,
+  ListGroupItem,
+  Button,
+  Form,
+  InputGroup,
+} from "react-bootstrap";
 import { BsGripVertical, BsThreeDotsVertical } from "react-icons/bs";
-import { FaPlus, FaSearch, FaCheckCircle, FaChevronDown, FaTrash } from "react-icons/fa";
+import {
+  FaPlus,
+  FaSearch,
+  FaCheckCircle,
+  FaChevronDown,
+  FaTrash,
+} from "react-icons/fa";
 import { FaRegFileAlt } from "react-icons/fa";
 import { RootState } from "@/app/(Kambaz)/store";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,10 +38,10 @@ export default function Assignments() {
   const { cid } = useParams();
   const dispatch = useDispatch();
 
- 
-  const { assignments } = useSelector((state: RootState) => state.assignmentsReducer);
+  const { assignments } = useSelector(
+    (state: RootState) => state.assignmentsReducer
+  );
 
- 
   useEffect(() => {
     const loadAssignments = async () => {
       if (!cid) return;
@@ -46,21 +58,43 @@ export default function Assignments() {
     }
   };
 
+  //  create assignment WITHOUT navigation
+  const handleAddAssignment = async () => {
+  if (!cid) return;
+
+  await client.createAssignmentForCourse(cid as string, {
+    title: "New Assignment",
+    description: "",
+    availableUntil: "",
+    dueDate: "",
+    points: 100,
+  });
+
+  const updatedAssignments =
+    await client.findAssignmentsForCourse(cid as string);
+  dispatch(setAssignments(updatedAssignments));
+};
+
+
   return (
     <div style={{ flex: 3 }} className="p-3">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <InputGroup style={{ maxWidth: "360px" }}>
-          <span className="input-group-text"><FaSearch /></span>
+          <span className="input-group-text">
+            <FaSearch />
+          </span>
           <Form.Control placeholder="Search for Assignments" />
         </InputGroup>
 
         <div className="d-flex gap-2">
-          <Button variant="secondary"><FaPlus className="me-1" /> Group</Button>
-          <Link href={`/Courses/${cid}/Assignments/new`} passHref>
-            <Button variant="danger">
-              <FaPlus className="me-1" /> Assignment
-            </Button>
-          </Link>
+          <Button variant="secondary">
+            <FaPlus className="me-1" /> Group
+          </Button>
+
+          {/* ✅ CHANGED: Button instead of Link */}
+          <Button variant="danger" onClick={handleAddAssignment}>
+            <FaPlus className="me-1" /> Assignment
+          </Button>
         </div>
       </div>
 
@@ -70,7 +104,9 @@ export default function Assignments() {
             <BsGripVertical className="me-2 fs-3" />
             <FaChevronDown className="me-2 fs-5" />
             <span>ASSIGNMENTS</span>
-            <span className="ms-auto badge bg-light text-dark border">40% of Total</span>
+            <span className="ms-auto badge bg-light text-dark border">
+              40% of Total
+            </span>
             <FaPlus className="ms-2 text-muted" />
             <BsThreeDotsVertical className="ms-3 fs-5 text-muted" />
           </div>
@@ -78,10 +114,13 @@ export default function Assignments() {
           <ListGroup className="wd-lessons rounded-0">
             {assignments.map((a: Assignment) => (
               <ListGroupItem
-                key={a._id}
+                key={a._id ?? `${a.course}-${a.title}`}
+
                 className="wd-lesson p-3 ps-3 d-flex align-items-center wd-lesson-left-line"
               >
-                <div className="me-3"><BsGripVertical className="fs-4 text-muted" /></div>
+                <div className="me-3">
+                  <BsGripVertical className="fs-4 text-muted" />
+                </div>
                 <FaRegFileAlt className="me-3 fs-4 text-muted" />
                 <div>
                   <div className="fw-bold">
@@ -93,9 +132,12 @@ export default function Assignments() {
                     </Link>
                   </div>
                   <div className="text-muted small">
-                    <span className="text-danger"> Multiple Modules </span> |{" "}
-                    <strong>Not available until</strong> {a.availableUntil} |{" "}
-                    Due {a.dueDate} | {a.points} pts
+                    <span className="text-danger">
+                      {" "}
+                      Multiple Modules{" "}
+                    </span>{" "}
+                    | <strong>Not available until</strong>{" "}
+                    {a.availableUntil} | Due {a.dueDate} | {a.points} pts
                   </div>
                 </div>
                 <FaCheckCircle className="text-success ms-auto fs-4" />

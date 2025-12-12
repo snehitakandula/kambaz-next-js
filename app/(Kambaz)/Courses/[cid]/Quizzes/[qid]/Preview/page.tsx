@@ -55,9 +55,49 @@ export default function QuizPreview() {
     setSubmitted(true);
   };
 
+  // Loading state
   if (!quiz) return <div className="p-3">Loading preview...</div>;
 
+  // Check if questions exist and array is not empty
+  if (!quiz.questions || quiz.questions.length === 0) {
+    return (
+      <div className="p-3">
+        <h3 className="mb-4">Preview: {quiz.title}</h3>
+        <div className="alert alert-warning">
+          No questions available for this quiz.
+        </div>
+        <Button
+          variant="secondary"
+          onClick={() =>
+            router.push(`/Courses/${courseId}/Quizzes/${quizId}`)
+          }
+        >
+          Back to Quiz
+        </Button>
+      </div>
+    );
+  }
+
   const q = quiz.questions[currentIndex];
+
+  // Safety check for current question
+  if (!q) {
+    return (
+      <div className="p-3">
+        <div className="alert alert-danger">
+          Error loading question {currentIndex + 1}.
+        </div>
+        <Button
+          variant="secondary"
+          onClick={() =>
+            router.push(`/Courses/${courseId}/Quizzes/${quizId}`)
+          }
+        >
+          Back to Quiz
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="p-3">
@@ -75,9 +115,9 @@ export default function QuizPreview() {
           <Card className="mb-3">
             <Card.Header>
               <strong>
-                Question {currentIndex + 1}: {q.title}
+                Question {currentIndex + 1}: {q.title || "Untitled Question"}
               </strong>
-              <span className="float-end">{q.points} pts</span>
+              <span className="float-end">{q.points || 0} pts</span>
             </Card.Header>
 
             <Card.Body>
