@@ -458,14 +458,23 @@ function QuestionEditor({
   onEdit: () => void;
   onCancel: () => void;
 }) {
+  const [editingQuestion, setEditingQuestion] = useState<Question>(question);
+
+  // Update local state when entering edit mode
+  useEffect(() => {
+    if (isEditing) {
+      setEditingQuestion(question);
+    }
+  }, [isEditing, question]);
+
   const setField = (field: keyof Question, value: any) =>
-    onChange({ ...question, [field]: value });
+    setEditingQuestion({ ...editingQuestion, [field]: value });
 
   const setChoices = (choices: Choice[]) =>
-    onChange({ ...question, choices });
+    setEditingQuestion({ ...editingQuestion, choices });
 
   const addChoice = () => {
-    const choices = question.choices || [];
+    const choices = editingQuestion.choices || [];
     setChoices([
       ...choices,
       { text: `Choice ${choices.length + 1}`, correct: false },
@@ -473,34 +482,34 @@ function QuestionEditor({
   };
 
   const markCorrectChoice = (idx: number) => {
-    const choices = (question.choices || []).map((c, i) => ({
+    const choices = (editingQuestion.choices || []).map((c, i) => ({
       ...c,
-      Correct: i === idx,
+      correct: i === idx ? !c.correct : c.correct,
     }));
     setChoices(choices);
   };
 
   const removeChoice = (idx: number) => {
-    const choices = [...(question.choices || [])];
+    const choices = [...(editingQuestion.choices || [])];
     choices.splice(idx, 1);
     setChoices(choices);
   };
 
   const addBlankAnswer = () => {
-    const arr = question.correctAnswers || [];
-    onChange({ ...question, correctAnswers: [...arr, ""] });
+    const arr = editingQuestion.correctAnswers || [];
+    setEditingQuestion({ ...editingQuestion, correctAnswers: [...arr, ""] });
   };
 
   const updateBlankAnswer = (idx: number, value: string) => {
-    const arr = [...(question.correctAnswers || [])];
+    const arr = [...(editingQuestion.correctAnswers || [])];
     arr[idx] = value;
-    onChange({ ...question, correctAnswers: arr });
+    setEditingQuestion({ ...editingQuestion, correctAnswers: arr });
   };
 
   const removeBlankAnswer = (idx: number) => {
-    const arr = [...(question.correctAnswers || [])];
+    const arr = [...(editingQuestion.correctAnswers || [])];
     arr.splice(idx, 1);
-    onChange({ ...question, correctAnswers: arr });
+    setEditingQuestion({ ...editingQuestion, correctAnswers: arr });
   };
 
   // Preview mode
@@ -535,7 +544,7 @@ function QuestionEditor({
             <Form.Control
               as="textarea"
               rows={2}
-              value={question.title}
+              value={editingQuestion.title}
               onChange={(e) => setField("title", e.target.value)}
               placeholder="Question Title"
               autoComplete="off"
@@ -543,7 +552,7 @@ function QuestionEditor({
           </Col>
           <Col md={2}>
             <Form.Select
-              value={question.type}
+              value={editingQuestion.type}
               onChange={(e) =>
                 setField("type", e.target.value as QuestionType)
               }
@@ -558,7 +567,7 @@ function QuestionEditor({
               <span className="me-2">pts:</span>
               <Form.Control
                 type="number"
-                value={question.points}
+                value={editingQuestion.points}
                 onChange={(e) =>
                   setField("points", Number(e.target.value))
                 }
@@ -610,44 +619,47 @@ function QuestionEditor({
                 }
                 style={{ minHeight: "60px", outline: "none" }}
               >
-                {question.questionText}
+                {editingQuestion.questionText}
               </div>
             </Card.Body>
           </Card>
         </Form.Group>
 
         {/* Multiple Choice */}
-        {question.type === "MULTIPLE_CHOICE" && (
+        {editingQuestion.type === "MULTIPLE_CHOICE" && (
           <div>
             <Form.Label><strong>Answers:</strong></Form.Label>
-            {(question.choices || []).map((choice, idx) => (
+            {(editingQuestion.choices || []).map((choice, idx) => (
               <div
                 key={idx}
-                className="d-flex align-items-center mb-2"
+                className="d-flex align-items-center mb-2 p-2"
+                style={{
+                  backgroundColor: choice.correct ? "#d4edda" : "#f8f9fa",
+                  border: choice.correct ? "2px solid #28a745" : "1px solid #dee2e6",
+                  borderRadius: "4px",
+                }}
               >
-                <div
-                  onClick={() => markCorrectChoice(idx)}
-                  style={{ cursor: "pointer" }}
+                <Form.Check
+                  type="checkbox"
+                  checked={choice.correct}
+                  onChange={() => markCorrectChoice(idx)}
                   className="me-2"
                   title={choice.correct ? "Correct Answer" : "Mark as correct"}
-                >
-                  {choice.correct ? (
-                    <span className="text-success fs-5">✓</span>
-                  ) : (
-                    <span className="text-muted fs-5">○</span>
-                  )}
-                </div>
+                />
                 <div className="flex-grow-1">
                   <Form.Label className="small text-muted mb-1">
                     {choice.correct ? "Correct Answer" : "Possible Answer"}
                   </Form.Label>
                   <Form.Control
+                    as="textarea"
+                    rows={2}
                     value={choice.text}
                     onChange={(e) => {
-                      const choices = [...(question.choices || [])];
+                      const choices = [...(editingQuestion.choices || [])];
                       choices[idx] = { ...choice, text: e.target.value };
                       setChoices(choices);
                     }}
+                    autoComplete="off"
                   />
                 </div>
                 <Button
@@ -674,7 +686,7 @@ function QuestionEditor({
         )}
 
         {/* True / False */}
-        {question.type === "TRUE_FALSE" && (
+        {editingQuestion.type === "TRUE_FALSE" && (
           <div className="mt-2">
             <strong>Correct Answer</strong>
             <div className="mt-2">
@@ -682,14 +694,14 @@ function QuestionEditor({
                 type="radio"
                 label="True"
                 name={`tf-${index}`}
-                checked={question.correctBoolean !== false}
+                checked={editingQuestion.correctBoolean !== false}
                 onChange={() => setField("correctBoolean", true)}
               />
               <Form.Check
                 type="radio"
                 label="False"
                 name={`tf-${index}`}
-                checked={question.correctBoolean === false}
+                checked={editingQuestion.correctBoolean === false}
                 onChange={() => setField("correctBoolean", false)}
               />
             </div>
@@ -697,7 +709,7 @@ function QuestionEditor({
         )}
 
         {/* Fill in the Blank */}
-        {question.type === "FILL_IN_BLANK" && (
+        {editingQuestion.type === "FILL_IN_BLANK" && (
           <div className="mt-2">
             <div className="d-flex justify-content-between mb-2">
               <strong>Possible Correct Answers</strong>
@@ -709,7 +721,7 @@ function QuestionEditor({
                 + Answer
               </Button>
             </div>
-            {(question.correctAnswers || []).map((ans, idx) => (
+            {(editingQuestion.correctAnswers || []).map((ans, idx) => (
               <div key={idx} className="d-flex align-items-center mb-2">
                 <Form.Control
                   value={ans}
@@ -734,10 +746,21 @@ function QuestionEditor({
         )}
 
         <div className="mt-3 d-flex justify-content-end gap-2">
-          <Button variant="secondary" size="sm" onClick={onCancel}>
+          <Button 
+            variant="secondary" 
+            size="sm" 
+            onClick={() => onCancel()}
+          >
             Cancel
           </Button>
-          <Button variant="danger" size="sm" onClick={onCancel}>
+          <Button 
+            variant="danger" 
+            size="sm"
+            onClick={() => {
+              onChange(editingQuestion);
+              onCancel();
+            }}
+          >
             Update Question
           </Button>
         </div>
