@@ -253,30 +253,34 @@ export default function Dashboard() {
                         {course.description}
                       </CardText>
 
-                      {/* Student enrollment buttons */}
-                      {currentUser && currentUser.role !== "FACULTY" && (
-                        enrolled ? (
-                          <Button
-                            variant="danger"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleUnenroll(course._id);
-                            }}
-                          >
-                            Unenroll
-                          </Button>
-                        ) : (
-                          <Button
-                            variant="success"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleEnroll(course._id);
-                            }}
-                          >
-                            Enroll
-                          </Button>
-                        )
-                      )}
+                      {/* Student enrollment buttons — ONLY on All Courses */}
+{currentUser &&
+  currentUser.role !== "FACULTY" &&
+  showAll && (
+    enrolled ? (
+      <Button
+        variant="danger"
+        onClick={(e) => {
+          e.preventDefault();
+          handleUnenroll(course._id);
+        }}
+      >
+        Unenroll
+      </Button>
+    ) : (
+      <Button
+        variant="success"
+        onClick={(e) => {
+          e.preventDefault();
+          handleEnroll(course._id);
+        }}
+      >
+        Enroll
+      </Button>
+    )
+  )
+}
+
 
                       {/* Faculty buttons only */}
                       {currentUser?.role === "FACULTY" && (

@@ -70,6 +70,10 @@ export default function QuizDetails() {
             <td>{quiz.quizType}</td>
           </tr>
           <tr>
+            <th>Quiz Description</th>
+            <td>{quiz.description}</td>
+          </tr>
+          <tr>
             <th>Points</th>
             <td>{quiz.points}</td>
           </tr>
