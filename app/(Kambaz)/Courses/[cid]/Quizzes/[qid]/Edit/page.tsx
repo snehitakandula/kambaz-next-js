@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Button,
   Form,
@@ -32,6 +32,7 @@ const quizId = params.qid;
   const [activeTab, setActiveTab] = useState<"details" | "questions">(
     "details"
   );
+  const [editingQuestionIndex, setEditingQuestionIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -42,6 +43,15 @@ q.questions = q.questions || [];
     };
     load();
   }, [quizId]);
+
+  const updateQuestion = useCallback((index: number, newQ: Question) => {
+    setQuiz((prevQuiz) => {
+      if (!prevQuiz) return prevQuiz;
+      const qs = [...prevQuiz.questions];
+      qs[index] = newQ;
+      return { ...prevQuiz, questions: qs };
+    });
+  }, []);
 
   if (!quiz) return <div className="p-3">Loading...</div>;
 
@@ -75,12 +85,6 @@ q.questions = q.questions || [];
       ],
     };
     setQuiz({ ...quiz, questions: [...quiz.questions, newQ] });
-  };
-
-  const updateQuestion = (index: number, newQ: Question) => {
-    const qs = [...quiz.questions];
-    qs[index] = newQ;
-    setQuiz({ ...quiz, questions: qs });
   };
 
   const removeQuestion = (index: number) => {
@@ -414,6 +418,9 @@ q.questions = q.questions || [];
               index={index}
               onChange={(newQ) => updateQuestion(index, newQ)}
               onDelete={() => removeQuestion(index)}
+              isEditing={editingQuestionIndex === index}
+              onEdit={() => setEditingQuestionIndex(index)}
+              onCancel={() => setEditingQuestionIndex(null)}
             />
           ))}
         </div>
@@ -439,11 +446,17 @@ function QuestionEditor({
   index,
   onChange,
   onDelete,
+  isEditing,
+  onEdit,
+  onCancel,
 }: {
   question: Question;
   index: number;
   onChange: (q: Question) => void;
   onDelete: () => void;
+  isEditing: boolean;
+  onEdit: () => void;
+  onCancel: () => void;
 }) {
   const setField = (field: keyof Question, value: any) =>
     onChange({ ...question, [field]: value });
@@ -490,32 +503,59 @@ function QuestionEditor({
     onChange({ ...question, correctAnswers: arr });
   };
 
+  // Preview mode
+  if (!isEditing) {
+    return (
+      <Card className="mb-3">
+        <Card.Body className="d-flex justify-content-between align-items-center">
+          <div>
+            <strong>{question.title}</strong>
+            <span className="text-muted ms-2">({question.type.replace(/_/g, ' ')})</span>
+            <span className="ms-2">{question.points} pts</span>
+          </div>
+          <div>
+            <Button size="sm" variant="outline-primary" onClick={onEdit} className="me-2">
+              Edit
+            </Button>
+            <Button size="sm" variant="outline-danger" onClick={onDelete}>
+              Delete
+            </Button>
+          </div>
+        </Card.Body>
+      </Card>
+    );
+  }
+
+  // Edit mode
   return (
     <Card className="mb-3">
-      <Card.Header className="d-flex justify-content-between">
-        <span>Question {index + 1}</span>
-        <Button
-          size="sm"
-          variant="outline-danger"
-          onClick={onDelete}
-        >
-          Delete
-        </Button>
-      </Card.Header>
       <Card.Body>
-        <Row className="mb-2">
-          <Col md={7}>
-            <Form.Group>
-              <Form.Label>Title</Form.Label>
-              <Form.Control
-                value={question.title}
-                onChange={(e) => setField("title", e.target.value)}
-              />
-            </Form.Group>
+        <Row className="mb-3">
+          <Col md={8}>
+            <Form.Control
+              as="textarea"
+              rows={2}
+              value={question.title}
+              onChange={(e) => setField("title", e.target.value)}
+              placeholder="Question Title"
+              autoComplete="off"
+            />
           </Col>
           <Col md={2}>
-            <Form.Group>
-              <Form.Label>Points</Form.Label>
+            <Form.Select
+              value={question.type}
+              onChange={(e) =>
+                setField("type", e.target.value as QuestionType)
+              }
+            >
+              <option value="MULTIPLE_CHOICE">Multiple Choice</option>
+              <option value="TRUE_FALSE">True / False</option>
+              <option value="FILL_IN_BLANK">Fill in the Blank</option>
+            </Form.Select>
+          </Col>
+          <Col md={2}>
+            <div className="d-flex align-items-center">
+              <span className="me-2">pts:</span>
               <Form.Control
                 type="number"
                 value={question.points}
@@ -523,74 +563,113 @@ function QuestionEditor({
                   setField("points", Number(e.target.value))
                 }
               />
-            </Form.Group>
-          </Col>
-          <Col md={3}>
-            <Form.Group>
-              <Form.Label>Type</Form.Label>
-              <Form.Select
-                value={question.type}
-                onChange={(e) =>
-                  setField("type", e.target.value as QuestionType)
-                }
-              >
-                <option value="MULTIPLE_CHOICE">Multiple Choice</option>
-                <option value="TRUE_FALSE">True / False</option>
-                <option value="FILL_IN_BLANK">Fill in the Blank</option>
-              </Form.Select>
-            </Form.Group>
+            </div>
           </Col>
         </Row>
 
         <Form.Group className="mb-3">
-          <Form.Label>Question</Form.Label>
-          <Form.Control
-            as="textarea"
-            rows={3}
-            value={question.questionText}
-            onChange={(e) => setField("questionText", e.target.value)}
-          />
+          <Form.Text className="text-muted">
+            Enter your question and multiple answers, then select the one correct answer.
+          </Form.Text>
+          <Form.Label className="mt-2"><strong>Question:</strong></Form.Label>
+          <Card className="border">
+            <Card.Header className="bg-light p-2">
+              <div className="d-flex gap-1 flex-wrap">
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => document.execCommand("bold")}
+                  title="Bold"
+                >
+                  <strong>B</strong>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => document.execCommand("italic")}
+                  title="Italic"
+                >
+                  <em>I</em>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-outline-secondary"
+                  onClick={() => document.execCommand("underline")}
+                  title="Underline"
+                >
+                  <u>U</u>
+                </button>
+              </div>
+            </Card.Header>
+            <Card.Body>
+              <div
+                contentEditable
+                suppressContentEditableWarning
+                onInput={(e) =>
+                  setField("questionText", e.currentTarget.textContent || "")
+                }
+                style={{ minHeight: "60px", outline: "none" }}
+              >
+                {question.questionText}
+              </div>
+            </Card.Body>
+          </Card>
         </Form.Group>
 
         {/* Multiple Choice */}
         {question.type === "MULTIPLE_CHOICE" && (
           <div>
-            <div className="d-flex justify-content-between mb-2">
-              <strong>Choices</strong>
-              <Button size="sm" variant="outline-secondary" onClick={addChoice}>
-                + Choice
-              </Button>
-            </div>
+            <Form.Label><strong>Answers:</strong></Form.Label>
             {(question.choices || []).map((choice, idx) => (
               <div
                 key={idx}
                 className="d-flex align-items-center mb-2"
               >
-                <Form.Check
-                  type="radio"
-                  name={`q-${index}-correct`}
-                  checked={choice.correct}
-                  onChange={() => markCorrectChoice(idx)}
+                <div
+                  onClick={() => markCorrectChoice(idx)}
+                  style={{ cursor: "pointer" }}
                   className="me-2"
-                />
-                <Form.Control
-                  value={choice.text}
-                  onChange={(e) => {
-                    const choices = [...(question.choices || [])];
-                    choices[idx] = { ...choice, text: e.target.value };
-                    setChoices(choices);
-                  }}
-                />
+                  title={choice.correct ? "Correct Answer" : "Mark as correct"}
+                >
+                  {choice.correct ? (
+                    <span className="text-success fs-5">✓</span>
+                  ) : (
+                    <span className="text-muted fs-5">○</span>
+                  )}
+                </div>
+                <div className="flex-grow-1">
+                  <Form.Label className="small text-muted mb-1">
+                    {choice.correct ? "Correct Answer" : "Possible Answer"}
+                  </Form.Label>
+                  <Form.Control
+                    value={choice.text}
+                    onChange={(e) => {
+                      const choices = [...(question.choices || [])];
+                      choices[idx] = { ...choice, text: e.target.value };
+                      setChoices(choices);
+                    }}
+                  />
+                </div>
                 <Button
                   size="sm"
-                  variant="outline-danger"
-                  className="ms-2"
+                  variant="link"
+                  className="ms-2 text-danger"
                   onClick={() => removeChoice(idx)}
+                  title="Delete"
                 >
-                  ✕
+                  🗑️
                 </Button>
               </div>
             ))}
+            <div className="text-center">
+              <Button 
+                variant="link" 
+                className="text-danger"
+                onClick={addChoice}
+              >
+                + Add Another Answer
+              </Button>
+            </div>
           </div>
         )}
 
@@ -653,6 +732,15 @@ function QuestionEditor({
             </div>
           </div>
         )}
+
+        <div className="mt-3 d-flex justify-content-end gap-2">
+          <Button variant="secondary" size="sm" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button variant="danger" size="sm" onClick={onCancel}>
+            Update Question
+          </Button>
+        </div>
       </Card.Body>
     </Card>
   );
