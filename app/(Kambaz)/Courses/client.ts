@@ -115,6 +115,8 @@ export interface Quiz {
 const COURSES_API = `${HTTP_SERVER}/api/courses`;
 const USERS_API = `${HTTP_SERVER}/api/users`;
 const QUIZZES_API = `${HTTP_SERVER}/api/quizzes`;
+export const ENROLLMENTS_API = `${HTTP_SERVER}/api/enrollments`;
+
 
 // ---------- COURSES ----------
 export const fetchAllCourses = async () => {
@@ -203,6 +205,8 @@ export const findUsersForCourse = async (courseId: string) => {
   );
   return data;
 };
+
+
 
 // ---------- ASSIGNMENTS ----------
 const ASSIGNMENTS_API = `${HTTP_SERVER}/api/assignments`;

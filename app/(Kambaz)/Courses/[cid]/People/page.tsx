@@ -1,33 +1,33 @@
 "use client";
-
-import { useEffect, useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { findUsersForCourse } from "../../client";
 import PeopleTable from "./Table";
+import * as coursesClient from "../../client";
 
-interface User {
-  _id: string;
-  firstName: string;
-  lastName: string;
-  loginId: string;
-  section: string;
-  role: string;
-  lastActivity: string;
-  totalActivity: string;
-}
 
 export default function PeoplePage() {
-  const { cid } = useParams();
-  const [users, setUsers] = useState<User[]>([]);
+  const params = useParams();
+  const cid = params.cid as string;
 
-  const fetchUsers = useCallback(async () => {
-    const users = await findUsersForCourse(cid as string);
-    setUsers(users);
-  }, [cid]);
+  const [users, setUsers] = useState<any[]>([]);
+
+  const fetchUsers = async () => {
+    if (!cid) return;
+    try {
+      const data = await coursesClient.findUsersForCourse(cid);
+      setUsers(data);
+    } catch (err) {
+      console.error("Failed to load users:", err);
+    }
+  };
 
   useEffect(() => {
     fetchUsers();
-  }, [fetchUsers]);
+  }, [cid]);
 
-  return <PeopleTable users={users} fetchUsers={fetchUsers} />;
+  return (
+    <div className="p-3">
+      <PeopleTable users={users} fetchUsers={fetchUsers} />
+    </div>
+  );
 }
