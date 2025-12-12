@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Button, Card, Form } from "react-bootstrap";
+import { Button, Card, Form, Row, Col } from "react-bootstrap";
 import * as client from "../../../../client";
 import type { Quiz, Question } from "../../../../client";
 
@@ -16,6 +16,7 @@ export default function QuizPreview() {
   const [answers, setAnswers] = useState<any>({});
   const [score, setScore] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const load = async () => {
@@ -56,9 +57,11 @@ export default function QuizPreview() {
 
   if (!quiz) return <div className="p-3">Loading preview...</div>;
 
+  const q = quiz.questions[currentIndex];
+
   return (
-    <div className="p-3" style={{ maxWidth: "900px" }}>
-      <h3>Preview: {quiz.title}</h3>
+    <div className="p-3">
+      <h3 className="mb-4">Preview: {quiz.title}</h3>
 
       {submitted && (
         <div className="alert alert-info">
@@ -66,81 +69,123 @@ export default function QuizPreview() {
         </div>
       )}
 
-      {quiz.questions.map((q: Question, idx) => (
-        <Card className="mb-3" key={q._id || idx}>
-          <Card.Header>
-            <strong>
-              Question {idx + 1}: {q.title}
-            </strong>
-            <span className="float-end">{q.points} pts</span>
-          </Card.Header>
-          <Card.Body>
-            <p>{q.questionText}</p>
+      <Row>
+        {/* LEFT SIDE — QUESTION */}
+        <Col md={9}>
+          <Card className="mb-3">
+            <Card.Header>
+              <strong>
+                Question {currentIndex + 1}: {q.title}
+              </strong>
+              <span className="float-end">{q.points} pts</span>
+            </Card.Header>
 
-            {/* Multiple Choice */}
-            {q.type === "MULTIPLE_CHOICE" &&
-              q.choices?.map((c) => (
-                <Form.Check
-                  key={idx}
+            <Card.Body>
+              <p>{q.questionText}</p>
 
-                  type="radio"
-                  name={`q-${q._id}`}
-                  label={c.text}
-                  checked={answers[q._id as string] === idx}
-onChange={() => setAnswer(q._id as string, idx)}
+              {/* Multiple Choice */}
+              {q.type === "MULTIPLE_CHOICE" &&
+                q.choices?.map((c, cIndex) => (
+                  <Form.Check
+                    key={`${currentIndex}-${cIndex}`}
+                    type="radio"
+                    name={`q-${q._id}`}
+                    label={c.text}
+                    checked={answers[q._id as string] === cIndex}
+                    onChange={() =>
+                      setAnswer(q._id as string, cIndex)
+                    }
+                  />
+                ))}
 
+              {/* True / False */}
+              {q.type === "TRUE_FALSE" && (
+                <>
+                  <Form.Check
+                    type="radio"
+                    label="True"
+                    name={`q-${q._id}`}
+                    checked={answers[q._id as string] === true}
+                    onChange={() => setAnswer(q._id as string, true)}
+                  />
+                  <Form.Check
+                    type="radio"
+                    label="False"
+                    name={`q-${q._id}`}
+                    checked={answers[q._id as string] === false}
+                    onChange={() => setAnswer(q._id as string, false)}
+                  />
+                </>
+              )}
+
+              {/* Fill In The Blank */}
+              {q.type === "FILL_IN_BLANK" && (
+                <Form.Control
+                  placeholder="Enter answer"
+                  value={answers[q._id as string] || ""}
+                  onChange={(e) =>
+                    setAnswer(q._id as string, e.target.value)
+                  }
                 />
+              )}
+            </Card.Body>
+          </Card>
+
+          {/* PREVIOUS / NEXT */}
+          <div className="d-flex justify-content-between mb-3">
+            <Button
+              disabled={currentIndex === 0}
+              onClick={() => setCurrentIndex(currentIndex - 1)}
+            >
+              Previous
+            </Button>
+
+            <Button
+              disabled={currentIndex === quiz.questions.length - 1}
+              onClick={() => setCurrentIndex(currentIndex + 1)}
+            >
+              Next
+            </Button>
+          </div>
+
+          {/* SUBMIT / BACK */}
+          <div className="d-flex justify-content-end gap-2">
+            {!submitted && (
+              <Button variant="primary" onClick={grade}>
+                Submit Preview
+              </Button>
+            )}
+            <Button
+              variant="secondary"
+              onClick={() =>
+                router.push(`/Courses/${courseId}/Quizzes/${quizId}`)
+              }
+            >
+              Back
+            </Button>
+          </div>
+        </Col>
+
+        {/* RIGHT SIDE — QUESTION JUMP LIST */}
+        <Col md={3}>
+          <div className="mt-2">
+            <strong>Questions</strong>
+            <ul className="list-unstyled mt-2">
+              {quiz.questions.map((_, i) => (
+                <li key={i}>
+                  <Button
+                    variant={i === currentIndex ? "primary" : "link"}
+                    className="p-0"
+                    onClick={() => setCurrentIndex(i)}
+                  >
+                    Question {i + 1}
+                  </Button>
+                </li>
               ))}
-
-            {/* True / False */}
-            {q.type === "TRUE_FALSE" && (
-              <>
-                <Form.Check
-                  type="radio"
-                  label="True"
-                  name={`q-${q._id}`}
-                  checked={answers[q._id as string] === true}
-                  onChange={() => setAnswer(q._id as string, true)}
-                />
-                <Form.Check
-                  type="radio"
-                  label="False"
-                  name={`q-${q._id}`}
-                  checked={answers[q._id as string] === false}
-                  onChange={() => setAnswer(q._id as string, false)}
-                />
-              </>
-            )}
-
-            {/* Fill In The Blank */}
-            {q.type === "FILL_IN_BLANK" && (
-              <Form.Control
-                placeholder="Enter answer"
-                value={answers[q._id as string] || ""}
-                onChange={(e) =>
-                  setAnswer(q._id as string, e.target.value)
-                }
-              />
-            )}
-          </Card.Body>
-        </Card>
-      ))}
-
-      <div className="d-flex justify-content-end gap-2">
-        {!submitted && (
-          <Button variant="primary" onClick={grade}>
-            Submit Preview
-          </Button>
-        )}
-        <Button
-          variant="secondary"
-          onClick={() =>
-            router.push(`/Courses/${courseId}/Quizzes/${quizId}`)
-          }
-        >
-          Back
-        </Button>
-      </div>
+            </ul>
+          </div>
+        </Col>
+      </Row>
     </div>
   );
 }
