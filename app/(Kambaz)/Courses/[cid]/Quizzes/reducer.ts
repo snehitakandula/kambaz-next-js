@@ -21,11 +21,12 @@ const quizzesSlice = createSlice({
     addQuiz(state, action: PayloadAction<Quiz>) {
       state.quizzes.push(action.payload);
     },
-    updateQuizInState(state, action: PayloadAction<Quiz>) {
-      state.quizzes = state.quizzes.map((q) =>
-        q._id === action.payload._id ? action.payload : q
-      );
-    },
+    updateQuizInState: (state, action) => {
+  state.quizzes = state.quizzes.map((q) =>
+    q._id === action.payload._id ? action.payload : q
+  );
+},
+
     removeQuiz(state, action: PayloadAction<string>) {
       state.quizzes = state.quizzes.filter((q) => q._id !== action.payload);
     },

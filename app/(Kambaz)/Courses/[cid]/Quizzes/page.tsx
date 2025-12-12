@@ -31,6 +31,8 @@ import {
 } from "./reducer";
 import * as client from "../../client";
 import type { Quiz } from "../../client";
+import { FaBan } from "react-icons/fa";
+
 
 export default function Quizzes() {
   const { cid } = useParams();
@@ -110,6 +112,7 @@ export default function Quizzes() {
     if (!courseId) return;
     const created = await client.createQuizForCourse(courseId, {
   title: "New Quiz",
+  published: false,
 });
     dispatch(addQuiz(created));
     window.location.href = `/Courses/${courseId}/Quizzes/${created._id}/Edit`;
@@ -171,16 +174,20 @@ export default function Quizzes() {
                   <BsGripVertical className="fs-4 text-muted" />
                 </div>
 
-                {/* Published / Unpublished icon */}
-                <div
-                  className="me-3"
-                  style={{ cursor: isFaculty ? "pointer" : "default" }}
-                  onClick={
-                    isFaculty ? () => handleTogglePublish(q) : undefined
-                  }
-                  title={q.isPublished ? "Published" : "Unpublished"}
-                >
-                </div>
+                {/* Published / Unpublished icon (clickable for faculty) */}
+<div
+  className="me-3"
+  style={{ cursor: isFaculty ? "pointer" : "default" }}
+  onClick={isFaculty ? () => handleTogglePublish(q) : undefined}
+  title={q.published ? "Published" : "Unpublished"}
+>
+  {q.published ? (
+    <FaCheckCircle className="text-success fs-4" />
+  ) : (
+    <FaBan className="text-danger fs-4" />
+  )}
+</div>
+
 
                 <div>
                   <div className="fw-bold">
@@ -201,7 +208,7 @@ export default function Quizzes() {
                   </div>
                 </div>
 
-                <FaCheckCircle className="text-success ms-auto fs-4" />
+          
 
                 {isFaculty && (
                   <Dropdown align="end" className="ms-3">
@@ -221,7 +228,7 @@ export default function Quizzes() {
                       <Dropdown.Item
                         onClick={() => handleTogglePublish(q)}
                       >
-                        {q.isPublished ? "Unpublish" : "Publish"}
+                        {q.published ? "Unpublish" : "publish"}
                       </Dropdown.Item>
                       <Dropdown.Item
                         onClick={() => handleDelete(q._id as string)}
